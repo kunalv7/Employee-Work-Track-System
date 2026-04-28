@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>User Login - Nexvora Technologies</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Segoe UI", Arial, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0f2027);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 15px;
+    }
+
+    .login-container {
+      width: 100%;
+      max-width: 400px;
+      z-index: 1;
+    }
+
+    .login-box {
+      backdrop-filter: blur(20px);
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      padding: 30px 25px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: #fff;
+      transform: perspective(1000px) rotateX(0deg);
+      transition: 0.4s ease;
+    }
+
+    .login-box:hover {
+      transform: perspective(1000px) rotateX(3deg) scale(1.01);
+    }
+
+    .login-box h2 {
+      text-align: center;
+      margin-bottom: 5px;
+      font-size: 22px;
+      color: #ffffff;
+    }
+    
+    .login-box h3 {
+      text-align: center;
+      font-size: 16px;
+      margin-bottom: 20px;
+      color: #00c6ff;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-size: 13px;
+      color: #ddd;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 15px;
+      margin-top: 5px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.05);
+      color: #fff;
+      transition: 0.3s;
+    }
+
+    input:focus {
+      border-color: #00c6ff;
+      box-shadow: 0 0 10px rgba(0,198,255,0.5);
+      outline: none;
+    }
+
+    input[readonly] {
+      background: rgba(255,255,255,0.1);
+      color: #aaa;
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 13px;
+      background: linear-gradient(135deg, #00c6ff, #0072ff);
+      color: white;
+      border: none;
+      border-radius: 30px;
+      font-size: 16px;
+      margin-top: 25px;
+      cursor: pointer;
+      transition: 0.3s;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+    }
+
+    .login-btn:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 15px 25px rgba(0,0,0,0.4);
+    }
+
+    .remember-forgot {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 15px;
+      font-size: 13px;
+    }
+
+    .remember {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .remember input {
+      width: 16px;
+      height: 16px;
+      accent-color: #00c6ff;
+    }
+
+    .forgot-link {
+      white-space: nowrap;
+      text-decoration: none;
+      color: #00c6ff;
+      position: relative;
+    }
+
+    .forgot-link::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -2px;
+      width: 0%;
+      height: 2px;
+      background: #00c6ff;
+      transition: 0.3s;
+    }
+
+    .forgot-link:hover::after {
+      width: 100%;
+    }
+
+    .extra-links {
+      text-align: center;
+      margin-top: 18px;
+      font-size: 13px;
+    }
+
+    .manager-link {
+      text-decoration: none;
+      color: #00c6ff;
+      position: relative;
+      font-weight: 500;
+    }
+
+    .manager-link::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -3px;
+      width: 0%;
+      height: 2px;
+      background: #00c6ff;
+      transition: 0.3s;
+    }
+
+    .manager-link:hover::after {
+      width: 100%;
+    }
+
+    .error {
+      color: #ff4d4d;
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    .footer {
+      font-size: 11px;
+      color: #ccc;
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    /* 📱 MOBILE OPTIMIZATION */
+    @media (max-width: 480px) {
+
+      body {
+        padding: 10px;
+      }
+
+      .login-box {
+        padding: 22px 18px;
+      }
+
+      .login-box h2 {
+        font-size: 18px;
+      }
+
+      .login-box h3 {
+        font-size: 14px;
+      }
+
+      input {
+        font-size: 16px;
+        padding: 11px;
+      }
+
+      .login-btn {
+        font-size: 17px;
+      }
+
+      .remember-forgot {
+        font-size: 12px;
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+
+<div class="login-container">
+  <div class="login-box">
+    <h2>Nexvora Technologies</h2>
+    <h3>User Login Page</h3>
+
+    <form method="POST">
+      {% csrf_token %}
+
+      {% if error %}
+        <p class="error">{{ error }}</p>
+      {% endif %}
+
+      <label>Company Code</label>
+      <input type="text" value="KCVISH" readonly>
+
+      <label>Username</label>
+      <input type="text" name="username" required>
+
+      <label>Password</label>
+      <input type="password" name="password" required>
+
+      <button type="submit" class="login-btn">Login</button>
+
+      <div class="remember-forgot">
+        <label class="remember">
+          <input type="checkbox" checked>
+          <span>Remember Me</span>
+        </label>
+
+        <a href="#" class="forgot-link">Forgot Password?</a>
+      </div>
+
+      <div class="extra-links">
+        <a href="{% url 'manager_login' %}" class="manager-link">
+          Click here for Manager Login
+        </a>
+      </div>
+
+      <p class="footer">Developed by Kunal Vishwakarma and Raj Verma.</p>
+    </form>
+  </div>
+</div>
+
+</body>
+</html>

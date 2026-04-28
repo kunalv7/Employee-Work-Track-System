@@ -1,0 +1,312 @@
+{% extends "authentication/root.html" %}
+{% load static %}
+
+{% block title %} Home {% endblock title %}
+
+{% block head %}
+
+<!-- ✅ FONT AWESOME (REQUIRED FOR ICONS) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+
+.main-container {
+    padding: 10px;
+}
+
+/* SECTION */
+.section {
+    margin-bottom: 30px;
+}
+
+.section h2 {
+    font-size: 20px;
+    margin-bottom: 15px;
+    color: #ffffff;
+}
+
+/* GRID */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: 15px;
+}
+
+.grid a {
+    text-decoration: none;
+}
+
+/* CARD */
+.card {
+    height: 100px;
+    border-radius: 18px;
+    display: flex;
+    flex-direction: column;   /* ✅ FIXED */
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-weight: 600;
+    font-size: 14px;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+
+    backdrop-filter: blur(10px);
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.1);
+
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    transition: 0.3s ease;
+}
+
+.card i {
+    font-size: 22px;
+    margin-bottom: 6px;
+}
+
+.card:hover {
+    transform: translateY(-5px) scale(1.03);
+    box-shadow: 0 20px 35px rgba(0,0,0,0.6);
+}
+
+.card::before {
+    content: "";
+    position: absolute;
+    width: 120%;
+    height: 120%;
+    background: linear-gradient(120deg, transparent, rgba(255,255,255,0.2), transparent);
+    top: -100%;
+    left: -100%;
+    transition: 0.5s;
+}
+
+.card:hover::before {
+    top: 100%;
+    left: 100%;
+}
+
+/* COLORS */
+.leave { background: linear-gradient(135deg, #00c6ff, #0072ff); }
+.leave-cancel { background: linear-gradient(135deg, #4ca1af, #2c3e50); }
+.swipe { background: linear-gradient(135deg, #f7971e, #ffd200); color: #333; }
+.timesheet { background: linear-gradient(135deg, #a18cd1, #fbc2eb); color: #333; }
+.expense { background: linear-gradient(135deg, #f6d365, #fda085); color: #333; }
+.attendance { background: linear-gradient(135deg, #36d1dc, #5b86e5); }
+.view { background: linear-gradient(135deg, #11998e, #38ef7d); }
+
+/* CORPORATE */
+.corporate {
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 20px;
+    text-align: center;
+
+    backdrop-filter: blur(12px);
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.1);
+
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.corporate h3 {
+    color: #fff;
+}
+
+/* BUTTON */
+.view-btn {
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    color: white;
+    border: none;
+    padding: 10px 22px;
+    margin-top: 10px;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.view-btn:hover {
+    transform: scale(1.05);
+}
+
+/* QUOTE */
+.quote {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 15px;
+    font-style: italic;
+    color: #ddd;
+
+    backdrop-filter: blur(10px);
+    background: rgba(255,255,255,0.08);
+    border-left: 4px solid #00c6ff;
+
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+}
+
+/* PROFILE TOP */
+.user-box{
+    display:flex;
+    align-items:center;
+    gap:15px;
+    padding:15px;
+    border-radius:18px;
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.1);
+    box-shadow:0 10px 25px rgba(0,0,0,0.4);
+}
+
+.user-box img{
+    width:60px;
+    height:60px;
+    border-radius:50%;
+    object-fit:cover;
+    border:2px solid rgba(255,255,255,0.4);
+}
+
+.user-name{
+    margin:0;
+    color:#fff;
+    font-size:20px;
+}
+
+.user-email{
+    margin:0;
+    color:#ccc;
+    font-size:14px;
+}
+
+/* MOBILE */
+@media (max-width: 480px) {
+
+    .section h2 {
+        font-size: 18px;
+    }
+
+    .card {
+        height: 90px;
+        font-size: 13px;
+    }
+
+    .view-btn {
+        width: 100%;
+    }
+
+    .user-name{
+        font-size:17px;
+    }
+
+    .user-email{
+        font-size:13px;
+    }
+}
+
+</style>
+{% endblock head %}
+
+{% block body %}
+
+<div class="container">
+    <main class="main-container">
+
+        <!-- USER PROFILE -->
+        <section class="section">
+            <div class="user-box">
+
+                {% if request.user.userprofile.profile_image %}
+                    <img src="{{ request.user.userprofile.profile_image.url }}" alt="User Image">
+                {% else %}
+                    <img src="/media/default-user-image/default-user-image.jpg" alt="Default User">
+                {% endif %}
+
+                <div>
+                    <h2 class="user-name">
+                        {% if request.user.first_name or request.user.last_name %}
+                            {{ request.user.first_name }} {{ request.user.last_name }}
+                        {% else %}
+                            Full Name Not Updated
+                        {% endif %}
+                    </h2>
+
+                    <p class="user-email">
+                        {% if request.user.email %}
+                            {{ request.user.email }}
+                        {% else %}
+                            Email Not Updated
+                        {% endif %}
+                    </p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- APPLICATIONS -->
+        <section class="section">
+            <h2>Applications</h2>
+            <div class="grid">
+
+                <a href="{% url 'leave_home' %}" class="card leave">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    <span>Leave</span>
+                </a>
+
+                <a href="{% url 'my_leave_requests' %}" class="card leave-cancel">
+                    <i class="fa-solid fa-calendar-xmark"></i>
+                    <span>Leave Cancellation</span>
+                </a>
+
+                <a href="{% url 'swipe_home' %}" class="card swipe">
+                    <i class="fa-solid fa-fingerprint"></i>
+                    <span>Swipe</span>
+                </a>
+
+                <a href="{% url 'expense_home' %}" class="card expense">
+                    <i class="fa-solid fa-money-bill-wave"></i>
+                    <span>Expense</span>
+                </a>
+
+                <a href="{% url 'attendance_home' %}" class="card attendance">
+                    <i class="fa-solid fa-user-check"></i>
+                    <span>Attendance</span>
+                </a>
+
+            </div>
+        </section>
+
+        <!-- VIEW -->
+        <section class="section">
+            <h2>View</h2>
+            <div class="grid">
+
+                <a href="{% url 'profile' %}" class="card view">
+                    <i class="fa-solid fa-user-gear"></i>
+                    <span>Self Service</span>
+                </a>
+
+                <a href="{% url 'my_attendance_home' %}" class="card view">
+                    <i class="fa-solid fa-clock"></i>
+                    <span>My Attendance</span>
+                </a>
+
+                <a href="{% url 'quick_info_home' %}" class="card view">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <span>Quick Info</span>
+                </a>
+
+            </div>
+        </section>
+
+        <!-- CORPORATE -->
+        <section class="corporate">
+            <h3>Corporate Guidelines</h3>
+            <button class="view-btn">View ⏳</button>
+        </section>
+
+        <!-- QUOTE -->
+        <blockquote class="quote">
+            “Although the world is full of troubles, it is also full of ways of overcoming them.”
+        </blockquote>
+
+    </main>
+</div>
+
+{% endblock body %}

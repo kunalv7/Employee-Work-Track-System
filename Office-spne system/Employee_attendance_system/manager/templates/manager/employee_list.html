@@ -1,0 +1,286 @@
+{% extends "manager/root.html" %}
+
+{% block body %}
+
+<style>
+/* ================= HEADER ================= */
+.header1 {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 25px;
+    backdrop-filter: blur(15px);
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 15px;
+    padding: 15px 20px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.header1 h2 {
+    color: #ffdd57;
+    font-size: 22px;
+}
+
+/* ================= SEARCH ================= */
+.search-box {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.search-box input {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: none;
+    width: 220px;
+    outline: none;
+}
+
+.search-box button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    color: white;
+    cursor: pointer;
+}
+
+.reset-btn {
+    padding: 8px 16px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #ff4d4d, #c0392b);
+    color: white;
+    text-decoration: none;
+}
+
+/* ================= TABLE WRAPPER ================= */
+.table-wrapper {
+    width: 100%;
+    max-width: 1200px;
+    overflow-x: auto;
+}
+
+/* ================= TABLE ================= */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(255,255,255,0.08);
+    color: white;
+    border-radius: 12px;
+    overflow: hidden;
+    min-width: 900px;
+}
+
+th, td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+    white-space: nowrap;
+}
+
+th {
+    background: rgba(0,0,0,0.4);
+    font-size: 14px;
+}
+
+tbody tr:hover {
+    background: rgba(255,255,255,0.05);
+}
+
+.emp-link {
+    color: #00c6ff;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s ease;
+    padding: 4px 8px;
+    border-radius: 6px;
+}
+
+/* HOVER EFFECT */
+.emp-link:hover {
+    color: #ffffff;
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    text-decoration: none;
+    transform: scale(1.05);
+    display: inline-block;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+/* ================= STATUS ================= */
+.active {
+    color: #00ff9d;
+    font-weight: bold;
+}
+
+.inactive {
+    color: #ff4d4d;
+    font-weight: bold;
+}
+
+/* ================= BUTTONS ================= */
+.view-btn {
+    padding: 6px 12px;
+    background: #27ae60;
+    color: white;
+    border-radius: 20px;
+    text-decoration: none;
+    transition: 0.3s;
+    display: inline-block;
+    margin: 2px;
+    font-size: 13px;
+}
+
+.view-btn:hover {
+    background: #2ecc71;
+    transform: scale(1.05);
+}
+
+.btn-analytics {
+    padding: 6px 12px;
+    background: #00c6ff;
+    color: black;
+    border-radius: 20px;
+    text-decoration: none;
+    transition: 0.3s;
+    display: inline-block;
+    margin: 2px;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.btn-analytics:hover {
+    background: #0099cc;
+    color: white;
+    transform: scale(1.05);
+}
+
+/* ================= MOBILE RESPONSIVE ================= */
+@media (max-width: 768px) {
+    .header1 {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .search-box input {
+        width: 160px;
+    }
+
+    table {
+        min-width: 100%;
+    }
+
+    th, td {
+        font-size: 12px;
+        padding: 10px;
+    }
+
+    .view-btn,
+    .btn-analytics {
+        padding: 5px 8px;
+        font-size: 11px;
+    }
+}
+
+</style>
+
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="header1">
+        <h2>👨‍💼 Employee List</h2>
+
+        <form method="get" class="search-box">
+            <input type="text" name="search" placeholder="Search..." value="{{ search }}">
+            <button type="submit">Search</button>
+            <a href="{% url 'employee_list' %}" class="reset-btn">Reset</a>
+        </form>
+    </div>
+
+    <!-- TABLE -->
+    <div class="table-wrapper">
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <!-- <th>Email</th> -->
+                    <th>Status</th>
+                    <th>Attendance</th>
+                    <th>Swipe</th>
+                    <th>Leave</th>
+                    <th>Expenses</th>
+                    <th>Analytics</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for item in employees %}
+                <tr>
+
+                    <!-- ✅ USERNAME LINK ADDED HERE -->
+                    <td>
+                        <a href="{% url 'employee_info' item.emp.id %}" style="color: #00c6ff; text-decoration: none; font-weight: bold;">
+                            {{ item.emp.username }}
+                        </a>
+                    </td>
+
+                    <td>
+                        {% if item.emp.is_active %}
+                            <span class="active">Active</span>
+                        {% else %}
+                            <span class="inactive">Inactive</span>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        <a href="{% url 'view_employee_attendance' item.emp.id %}" class="view-btn">
+                            View
+                        </a>
+                    </td>
+
+                    <td>
+                        <a href="{% url 'employee_swipe_details' item.emp.id %}" class="view-btn">
+                            View
+                        </a>
+                    </td>
+
+                    <td>
+                        <a href="{% url 'employee_leave_details' item.emp.id %}" class="view-btn">
+                            View
+                        </a>
+                    </td>
+
+                    <td>
+                        <a class="view-btn">
+                            View
+                        </a>
+                    </td>
+
+                    <td>
+                        <a href="{% url 'employee_analytics' item.emp.id %}" class="btn-analytics">
+                            📊 View
+                        </a>
+                    </td>
+
+                </tr>
+
+                {% empty %}
+                <tr>
+                    <td colspan="8">No employees found</td>
+                </tr>
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+    </div>
+
+</div>
+
+{% endblock %}

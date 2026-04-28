@@ -1,0 +1,266 @@
+{% extends "authentication/root.html" %}
+{% load static %}
+
+{% block title %}Quick Info{% endblock %}
+
+{% block body %}
+
+<div class="container">
+
+    <!-- PROFILE -->
+    <div class="profile">
+
+        {% if request.user.userprofile.profile_image %}
+            <img src="{{ request.user.userprofile.profile_image.url }}">
+        {% else %}
+            <img src="/media/default-user-image/default-user-image.jpg">
+        {% endif %}
+        <div>
+            <h3>{{ full_name }}</h3>
+            <p>{{ email }}</p>
+        </div>
+        
+        <span class="status {{ today_status|lower|cut:' ' }}">{{ today_status }}</span>
+    </div>
+
+    <!-- GRID -->
+    <div class="grid">
+
+        <!-- LEAVE -->
+        <div class="card">
+            <h4>🌴 Leave Balance</h4>
+
+            <div class="big">{{ leave_balance }}</div>
+
+            <div class="progress">
+                <div style="width:{{ leave_used_percent }}%"></div>
+            </div>
+
+            <small>{{ used_leaves }} used of {{ total_leaves }}</small>
+        </div>
+
+        <!-- HOURS -->
+        <div class="card">
+            <h4>⏱ Working Hours</h4>
+            <div class="big">{{ today_hours }}</div>
+        </div>
+
+        <!-- LATE -->
+        <div class="card">
+            <h4>⏰ Late This Month</h4>
+            <div class="big">{{ late_count }}</div>
+        </div>
+
+        <!-- HOLIDAYS -->
+        <div class="card">
+            <h4>🎉 Holiday List (2026)</h4>
+
+            <div class="holiday-list">
+
+                {% for name, date in holidays %}
+                <div class="holiday-item">
+                    <span>{{ name }}</span>
+                    <small>{{ date }}</small>
+                </div>
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- TIMELINE -->
+    <div class="timeline">
+        <h4>📍 Today Activity</h4>
+
+        <div class="timeline-box">
+            <span>IN</span>
+            <strong>{{ in_time }}</strong>
+        </div>
+
+        <div class="timeline-box">
+            <span>OUT</span>
+            <strong>{{ out_time }}</strong>
+        </div>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="actions">
+        <a href="{% url 'leave_home' %}">Apply Leave</a>
+        <a href="{% url 'my_attendance_home' %}">Attendance</a>
+        <a href="{% url 'swipe_home' %}">Swipe</a>
+    </div>
+
+</div>
+
+<!-- ================= CSS ================= -->
+<style>
+
+/* BASE */
+.dashboard{
+    padding:20px;
+    color:#fff;
+    max-width:1200px;
+    margin:auto;
+}
+
+/* TOPBAR */
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:10px;
+}
+
+/* STATUS */
+.status{
+    padding:6px 14px;
+    border-radius:20px;
+    font-size:12px;
+    text-transform:capitalize;
+}
+
+.status.present{ background:#38ef7d; }
+.status.absent{ background:#ff4d4d; }
+.status.incomplete{ background:#ffa500; }
+.status.halfday{ background:#ffb703; }
+
+/* PROFILE */
+.profile{
+    display:flex;
+    align-items:center;
+    gap:15px;
+    margin:20px 0;
+    background:rgba(255,255,255,0.08);
+    padding:15px;
+    border-radius:15px;
+    flex-wrap:wrap;
+}
+
+.profile img{
+    width:60px;
+    height:60px;
+    border-radius:50%;
+}
+
+/* GRID */
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:20px;
+}
+
+/* CARD */
+.card{
+    padding:20px;
+    border-radius:15px;
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(10px);
+    box-shadow:0 10px 25px rgba(0,0,0,0.3);
+}
+
+/* BIG TEXT */
+.big{
+    font-size:28px;
+    margin:10px 0;
+}
+
+/* PROGRESS */
+.progress{
+    height:8px;
+    background:#333;
+    border-radius:10px;
+    overflow:hidden;
+}
+.progress div{
+    height:100%;
+    background:#00c6ff;
+}
+
+/* HOLIDAY LIST */
+.holiday-list{
+    max-height:220px;
+    overflow:auto;
+}
+
+.holiday-item{
+    display:flex;
+    justify-content:space-between;
+    padding:8px;
+    border-bottom:1px solid rgba(255,255,255,0.1);
+}
+
+/* TIMELINE */
+.timeline{
+    margin-top:25px;
+}
+
+.timeline-box{
+    display:flex;
+    justify-content:space-between;
+    padding:10px;
+    margin-top:5px;
+    background:rgba(255,255,255,0.08);
+    border-radius:10px;
+}
+
+/* ACTIONS */
+.actions{
+    margin-top:25px;
+    display:flex;
+    gap:15px;
+    justify-content:center;
+    flex-wrap:wrap;
+}
+
+.actions a{
+    padding:10px 20px;
+    border-radius:25px;
+    background:linear-gradient(135deg,#667eea,#764ba2);
+    color:white;
+    text-decoration:none;
+}
+
+/* TABLET */
+@media(max-width:768px){
+    .topbar{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .big{
+        font-size:24px;
+    }
+}
+
+/* MOBILE */
+@media(max-width:500px){
+
+    .dashboard{
+        padding:12px;
+    }
+
+    .profile{
+        flex-direction:column;
+        text-align:center;
+    }
+
+    .big{
+        font-size:22px;
+    }
+
+    .actions{
+        flex-direction:column;
+    }
+
+    .actions a{
+        width:100%;
+        text-align:center;
+    }
+}
+
+</style>
+
+{% endblock %}

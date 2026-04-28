@@ -1,0 +1,28 @@
+<!-- {% extends "authentication/root.html" %}
+{% load static %}
+
+
+{% block title %} Leave {% endblock title %}
+
+
+{% block head %}
+<style>
+
+</style>
+{% endblock head %}
+
+
+{% block body %}
+
+<div class="container">
+
+</div>
+
+{% endblock body %} -->
+
+
+
+✅ 
+Self Service dashboard ko advance bana deta hu (profile + leave + attendance)
+✅ ya 
+Quick Info ko real-time data (present, absent, late) ke saath connect kar deta hu

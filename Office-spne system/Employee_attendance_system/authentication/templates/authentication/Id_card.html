@@ -1,0 +1,281 @@
+{% extends "authentication/root.html" %}
+{% load static %}
+
+{% block title %} ID Card {% endblock %}
+
+{% block head %}
+<style>
+.main-container{
+    display:flex;
+    justify-content:center;
+}
+
+.id-card{
+    width:340px;
+    background:linear-gradient(135deg,#1c5d8a,#198754);
+    color:white;
+    border-radius:15px;
+    padding:20px;
+    text-align:center;
+    box-shadow:0 10px 25px rgba(0,0,0,0.3);
+}
+
+/* ✅ Tablet view */
+@media (min-width: 768px) {
+    .id-card{
+        width:420px;
+        padding:25px;
+    }
+
+    .name{
+        font-size:24px;
+    }
+
+    .company{
+        font-size:20px;
+    }
+}
+
+/* ✅ Desktop view */
+@media (min-width: 1024px) {
+    .id-card{
+        width:500px;
+        padding:30px;
+    }
+
+    .name{
+        font-size:26px;
+    }
+
+    .designation{
+        font-size:16px;
+    }
+
+    .details{
+        font-size:14px;
+    }
+
+    .company{
+        font-size:22px;
+    }
+
+    .company-details{
+        font-size:12px;
+    }
+}
+
+.company{
+    font-size:18px;
+    font-weight:bold;
+    margin-bottom:10px;
+}
+
+.company-details{
+    font-size:11px;
+    margin-top:10px;
+    line-height:1.5;
+    opacity:0.9;
+    border-top:1px solid rgba(255,255,255,0.3);
+    padding-top:8px;
+    word-break:break-word;
+    font-style: italic;
+}
+
+.profile-img img{
+    width:90px;
+    height:90px;
+    border-radius:50%;
+    border:3px solid white;
+    object-fit:cover;
+    margin-bottom:10px;
+}
+
+/* responsive image */
+@media (min-width:768px){
+    .profile-img img{
+        width:110px;
+        height:110px;
+    }
+}
+
+@media (min-width:1024px){
+    .profile-img img{
+        width:130px;
+        height:130px;
+    }
+}
+
+.name{
+    font-size:20px;
+    font-weight:bold;
+}
+
+.designation{
+    font-size:14px;
+    margin-bottom:10px;
+}
+
+.details{
+    text-align:left;
+    margin-top:10px;
+    font-size:13px;
+}
+
+.details p{
+    margin:4px 0;
+}
+
+.address{
+    word-wrap:break-word;
+    font-size:12px;
+}
+
+.Valid{
+    margin-top:10px;
+    font-size:13px;
+    font-style: italic;
+}
+
+.print-btn{
+    margin-top:20px;
+    text-align:center;
+}
+
+.print-btn button{
+    padding:10px 20px;
+    border:none;
+    background:#000;
+    color:white;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+/* ================= PRINT ================= */
+@media print {
+
+    body * {
+        visibility: hidden;
+    }
+
+    .id-card, .id-card * {
+        visibility: visible;
+    }
+
+    html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+    }
+
+    .id-card {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 340px;
+        box-shadow: none;
+        page-break-inside: avoid;
+        border: 1px solid gray;
+    }
+
+    .print-btn {
+        display: none;
+    }
+
+    @page {
+        margin: 0;
+    }
+}
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+<div class="main-container">
+
+<div>
+<div class="id-card">
+
+<div class="company">Nexvora Technologies</div>
+
+<div class="profile-img">
+{% if profile.profile_image %}
+    <img src="{{ profile.profile_image.url }}" alt="Profile" width="90" height="90">
+{% else %}
+    <img src="/media/default-user-image/default-user-image.jpg" alt="Default User" width="90" height="90">
+{% endif %}
+</div>
+
+<div class="name">
+{{ request.user.first_name|default:"User" }} {{ request.user.last_name|default:"" }}
+</div>
+
+<div class="designation">
+{{ profile.designation|default:"Employee" }}
+</div>
+
+<div class="details">
+
+<p><strong>ID:</strong> {{ profile.employee_id }}</p>
+
+<p><strong>Department:</strong>
+{{ profile.department|default:"NA" }}
+</p>
+
+<p><strong>Phone:</strong>
+{{ profile.phone|default:"NA" }}
+</p>
+
+<p><strong>Email:</strong>
+{{ request.user.email|default:"NA" }}
+</p>
+
+<p><strong>Emergency:</strong>
+{{ profile.emergency_contact_phone|default:"NA" }}
+</p>
+
+<p><strong>Blood Group:</strong>
+{{ profile.blood_group|default:"NA" }}
+</p>
+
+<p><strong>Joining Date:</strong>
+{% if profile.joining_date %}
+{{ profile.joining_date|date:"d M Y" }}
+{% else %}
+NA
+{% endif %}
+</p>
+
+<p><strong>Address:</strong></p>
+<p class="address">
+{{ profile.address|default:"NA" }}
+</p>
+
+</div>
+
+<div class="company-details">
+Nexvora Technologies,
+Office No. 12, 2nd Floor,
+Vishwakarma Complex,
+Azad Road, Vile Parle East,
+Mumbai, Maharashtra - 400057,
+India<br>
+Phone: +91 9876543210 <br>
+Email: kvishwakarma@example.com
+</div>
+
+<div class="Valid">
+Valid Employee ID Card | Company Property
+</div>
+
+</div>
+
+<div class="print-btn">
+<button onclick="window.print()">Print ID Card</button>
+</div>
+
+</div>
+
+</div>
+</div>
+{% endblock %}

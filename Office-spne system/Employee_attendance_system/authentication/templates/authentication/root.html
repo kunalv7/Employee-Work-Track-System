@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <title>KV System |{% block title %} {% endblock title %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f2027);
+            min-height: 100vh;
+            color: white;
+        }
+
+        /*  HEADER */
+        .header {
+            position: fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 95%;
+            backdrop-filter: blur(15px);
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 12px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.1);
+            z-index: 1000;
+        }
+
+        .header h1 {
+            font-size: 18px;
+        }
+
+        .header p {
+            font-size: 13px;
+            color: #ccc;
+        }
+
+        /*  MAIN */
+        .container {
+            padding: 50px 5px 90px 5px;
+        }
+
+        /*  FOOTER */
+        .footer {
+            position: fixed;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 95%;
+            backdrop-filter: blur(15px);
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
+            z-index: 1000;
+        }
+
+        .footer-nav {
+            display: flex;
+            gap: 18px;
+        }
+
+        .footer-nav a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 13px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: 0.3s;
+        }
+
+        .footer-nav a i {
+            font-size: 16px;
+            margin-bottom: 3px;
+        }
+
+        .footer-nav a:hover {
+            color: #00c6ff;
+            transform: translateY(-3px) scale(1.05);
+        }
+
+        /*  ACTIVE FOOTER */
+        .footer-nav a.active {
+            color: #00c6ff;
+            transform: translateY(-3px) scale(1.05);
+        }
+
+        .footer-nav a.active i {
+            color: #00c6ff;
+        }
+
+        .logo {
+            font-size: 12px;
+            color: white;
+        }
+
+        /*  MOBILE */
+        @media (max-width: 480px) {
+
+            .header h1 {
+                font-size: 16px;
+            }
+
+            .header p {
+                font-size: 12px;
+            }
+
+            .footer-nav {
+                gap: 12px;
+            }
+
+            .footer-nav a {
+                font-size: 11px;
+            }
+
+            .footer-nav a i {
+                font-size: 14px;
+            }
+
+            .logo {
+                display: block;
+            }
+        }
+    </style>
+
+    {% block head %} {% endblock head %}
+</head>
+
+<body>
+
+    <!--  HEADER -->
+    <header class="header">
+        <h1>Nexvora Technologies</h1>
+        <p>
+            Welcome:
+            {% if request.user.first_name or request.user.last_name %}
+                {{ request.user.first_name }} {{ request.user.last_name }}
+            {% else %}
+                {{ request.user.username }}
+            {% endif %}
+        </p>
+    </header>
+
+    <!--  BODY -->
+    <div class="container">
+        {% block body %} {% endblock body %}
+    </div>
+
+    <!--  BACK BUTTON BLOCK -->
+    <script>
+        history.pushState(null, null, location.href);
+        window.onpopstate = function () {
+            history.go(1);
+        };
+    </script>
+
+    <!--  FOOTER -->
+    <footer class="footer">
+
+        <div class="footer-nav">
+            <a href="{% url 'id_card' %}">
+                <i class="fas fa-id-card"></i>
+                <span>Id</span>
+            </a>
+
+            <a href="{% url 'home' %}">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </a>
+
+            <a href="{% url 'user_logout' %}">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+
+        <div class="logo">
+            <img src="{% static 'images/logo.png' %}" alt="Nexvora Logo" style="height:35px;">
+        </div>
+    </footer>
+
+    <!--  ACTIVE FOOTER SCRIPT -->
+    <script>
+        const links = document.querySelectorAll(".footer-nav a");
+
+        // Click active
+        links.forEach(link => {
+            link.addEventListener("click", function () {
+                links.forEach(l => l.classList.remove("active"));
+                this.classList.add("active");
+            });
+        });
+
+        // Page load active
+        const currentPath = window.location.pathname;
+
+        links.forEach(link => {
+            if (link.getAttribute("href") === currentPath) {
+                link.classList.add("active");
+            }
+        });
+    </script>
+
+</body>
+</html>

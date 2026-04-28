@@ -1,0 +1,139 @@
+{% extends "authentication/root.html" %}
+{% load static %}
+
+{% block title %} Leave Menu {% endblock title %}
+
+{% block head %}
+<style>
+
+/* MAIN */
+.main-content {
+    padding: 10px;
+}
+
+/* HEADING */
+.main-content h2 {
+    margin-bottom: 20px;
+    font-size: 20px;
+    color: #ffffff;
+}
+
+/* LINK RESET */
+.main-content a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* 🔥 GLASS CARD MENU (SAME AS SWIPE) */
+.menu-item {
+    display: flex;
+    align-items: center;
+    padding: 14px 16px;
+    margin-bottom: 15px;
+    border-radius: 16px;
+
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    border: 1px solid rgba(255,255,255,0.15);
+
+    box-shadow: 
+        0 8px 20px rgba(0,0,0,0.4),
+        inset 0 0 0 rgba(255,255,255,0.05);
+
+    transition: all 0.3s ease;
+}
+
+/* HOVER */
+.menu-item:hover {
+    transform: translateY(-3px) scale(1.01);
+    background: rgba(255,255,255,0.1);
+}
+
+/* ICON */
+.menu-item i {
+    font-size: 18px;
+    margin-right: 12px;
+
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    color: #222;
+
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+}
+
+/* TEXT */
+.menu-item span {
+    font-size: 14px;
+    font-weight: 500;
+    color: #ffffff;
+}
+
+/* 📱 MOBILE */
+@media (max-width: 480px) {
+
+    .main-content h2 {
+        font-size: 18px;
+    }
+
+    .menu-item {
+        padding: 12px;
+    }
+
+    .menu-item span {
+        font-size: 13px;
+    }
+}
+
+</style>
+{% endblock head %}
+
+{% block body %}
+
+<div class="container">
+    
+    <div class="main-content">
+
+        <h2>📅 Leave Dashboard</h2>
+
+        <a href="{% url 'leave_apply' %}" class="menu-item">
+            <i class="fas fa-file-alt"></i>
+            <span>Apply Leave</span>
+        </a>
+
+        <a href="{% url 'recent_leave' %}" class="menu-item">
+            <i class="fas fa-clock"></i>
+            <span>Recent Leave</span>
+        </a>
+
+        <a href="{% url 'approve_leave' %}" class="menu-item">
+            <i class="fas fa-check-circle"></i>
+            <span>Approved Leave</span>
+        </a>
+
+        <a href="{% url 'reject_leave' %}" class="menu-item">
+            <i class="fas fa-times-circle"></i>
+            <span>Rejected Applications</span>
+        </a>
+
+        <!-- OPTIONAL -->
+        <!--
+        <a href="{% url 'lapsed_leave' %}" class="menu-item">
+            <i class="fas fa-hourglass-half"></i>
+            <span>Lapsed Applications</span>
+        </a>
+        -->
+
+    </div>
+
+</div>
+
+{% endblock body %}

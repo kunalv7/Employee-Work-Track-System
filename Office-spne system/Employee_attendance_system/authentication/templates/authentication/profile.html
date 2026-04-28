@@ -1,0 +1,487 @@
+{% extends "authentication/root.html" %}
+{% load static %}
+
+{% block title %} Profile {% endblock %}
+
+{% block head %}
+<style>
+.main-container{
+    display:flex;
+    justify-content:center;
+}
+
+.profile-wrapper{
+    width:100%;
+    display:flex;
+    justify-content:center;
+}
+
+.profile-card{
+    width:100%;
+    max-width:900px;
+    background:#ffffff10;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 8px 20px rgba(0,0,0,0.2);
+}
+
+.profile-card h2{
+    text-align:center;
+    color:#fff;
+    margin-bottom:20px;
+}
+
+.profile-card h4{
+    color:#fff;
+    margin-top:25px;
+    margin-bottom:15px;
+    border-bottom:1px solid rgba(255,255,255,0.2);
+    padding-bottom:5px;
+}
+
+.form-row{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:12px;
+}
+
+@media (min-width:768px){
+    .form-row{
+        grid-template-columns:1fr 1fr;
+    }
+}
+
+.full-width{
+    grid-column:1 / -1;
+}
+
+.profile-card label{
+    color:#ddd;
+    font-size:13px;
+    margin-bottom:4px;
+    display:block;
+}
+
+.profile-card input,
+.profile-card textarea,
+.profile-card select{
+    width:100%;
+    padding:10px;
+    border-radius:8px;
+    border:1px solid #ccc;
+    background:rgba(255,255,255,0.1);
+    color:#fff;
+    outline:none;
+}
+
+.profile-card input::placeholder,
+.profile-card textarea::placeholder{
+    color:#cfcfcf;
+    opacity:1;
+}
+
+.profile-card select option{
+    color:#000;
+}
+
+.profile-card textarea{
+    resize:none;
+    min-height:90px;
+}
+
+.profile-card input:disabled,
+.profile-card textarea:disabled,
+.profile-card select:disabled{
+    background:rgba(255,255,255,0.05);
+    color:#bbb;
+}
+
+.profile-img{
+    text-align:center;
+    margin-bottom:15px;
+}
+
+.profile-img img{
+    width:120px;
+    height:120px;
+    border-radius:50%;
+    object-fit:cover;
+    border:3px solid #fff;
+}
+
+.remove-image-label{
+    display:flex !important;
+    align-items:center;
+    gap:10px;
+    color:#fff !important;
+    font-size:14px !important;
+    margin-bottom:10px;
+    cursor:pointer;
+}
+
+.remove-image-label input[type="checkbox"]{
+    width:18px;
+    height:18px;
+    margin:0;
+    padding:0;
+    accent-color:#198754;
+    flex-shrink:0;
+}
+
+.remove-image-label span{
+    line-height:1;
+}
+
+.btn-group{
+    display:flex;
+    gap:10px;
+    margin-top:20px;
+    flex-wrap:wrap;
+}
+
+.profile-card button{
+    flex:1;
+    min-width:180px;
+    padding:10px;
+    border:none;
+    border-radius:8px;
+    color:#fff;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.edit-btn{background:#1c5d8a;}
+.save-btn{background:#198754;}
+
+.success-msg{
+    text-align:center;
+    color:lightgreen;
+    margin-bottom:10px;
+}
+
+hr{
+    border:none;
+    border-top:1px solid rgba(255,255,255,0.2);
+    margin:20px 0;
+}
+
+@media (max-width:767px){
+    .profile-card{
+        padding:18px;
+    }
+
+    .btn-group{
+        flex-direction:column;
+    }
+
+    .profile-card button{
+        width:100%;
+    }
+}
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+<div class="main-container">
+    <div class="profile-wrapper">
+        <div class="profile-card">
+
+            <h2>My Profile</h2>
+
+            {% if success %}
+            <div class="success-msg">{{ success }}</div>
+            {% endif %}
+
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <!-- IMAGE -->
+                <div class="profile-img">
+                    {% if profile.profile_image %}
+                        <img src="{{ profile.profile_image.url }}" alt="Profile" width="120" height="120">
+                    {% else %}
+                        <img src="/media/default-user-image/default-user-image.jpg" alt="Default User" width="120" height="120">
+                    {% endif %}
+                </div>
+
+                <div class="form-row">
+                    <div class="full-width">
+                        {% if profile.profile_image %}
+                        <label class="remove-image-label">
+                            <input type="checkbox" name="delete_image">
+                            <span>Remove Image</span>
+                        </label>
+                        {% endif %}
+                        <input type="file" name="profile_image" disabled>
+                    </div>
+                </div>
+
+                <hr>
+
+                <h4>Personal Info</h4>
+                <div class="form-row">
+
+                    <div>
+                        <label>First Name</label>
+                        <input type="text" name="first_name" value="{{ request.user.first_name|default:'' }}" placeholder="Enter first name" disabled>
+                    </div>
+
+                    <div>
+                        <label>Last Name</label>
+                        <input type="text" name="last_name" value="{{ request.user.last_name|default:'' }}" placeholder="Enter last name" disabled>
+                    </div>
+
+                    <div>
+                        <label>Email</label>
+                        <input type="email" name="email" value="{{ request.user.email|default:'' }}" placeholder="Enter email address" disabled>
+                    </div>
+
+                    <div>
+                        <label>Phone</label>
+                        <input type="text" name="phone" value="{{ profile.phone|default:'' }}" placeholder="Enter phone number" disabled>
+                    </div>
+
+                    <div>
+                        <label>Alternate Phone</label>
+                        <input type="text" name="alternate_phone" value="{{ profile.alternate_phone|default:'' }}" placeholder="Enter alternate phone" disabled>
+                    </div>
+
+                    <div class="full-width">
+                        <label>Address</label>
+                        <textarea name="address" placeholder="Enter full address" disabled>{{ profile.address|default:'' }}</textarea>
+                    </div>
+
+                    <div>
+                        <label>City</label>
+                        <input type="text" name="city" value="{{ profile.city|default:'' }}" placeholder="Enter city" disabled>
+                    </div>
+
+                    <div>
+                        <label>State</label>
+                        <input type="text" name="state" value="{{ profile.state|default:'' }}" placeholder="Enter state" disabled>
+                    </div>
+
+                    <div>
+                        <label>Country</label>
+                        <input type="text" name="country" value="{{ profile.country|default:'' }}" placeholder="Enter country" disabled>
+                    </div>
+
+                    <div>
+                        <label>Pincode</label>
+                        <input type="text" name="pincode" value="{{ profile.pincode|default:'' }}" placeholder="Enter pincode" disabled>
+                    </div>
+
+                    <div>
+                        <label>Date of Birth</label>
+                        <input type="date" name="dob" value="{{ profile.dob|date:'Y-m-d' }}" disabled>
+                    </div>
+
+                    <div>
+                        <label>Gender</label>
+                        <select name="gender" disabled>
+                            <option value="" {% if not profile.gender %}selected{% endif %}>Select Gender</option>
+                            <option value="Male" {% if profile.gender == "Male" %}selected{% endif %}>Male</option>
+                            <option value="Female" {% if profile.gender == "Female" %}selected{% endif %}>Female</option>
+                            <option value="Other" {% if profile.gender == "Other" %}selected{% endif %}>Other</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label>Marital Status</label>
+                        <select name="marital_status" disabled>
+                            <option value="" {% if not profile.marital_status %}selected{% endif %}>Select Marital Status</option>
+                            <option value="Single" {% if profile.marital_status == "Single" %}selected{% endif %}>Single</option>
+                            <option value="Married" {% if profile.marital_status == "Married" %}selected{% endif %}>Married</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label>Blood Group</label>
+                        <input type="text" name="blood_group" value="{{ profile.blood_group|default:'' }}" placeholder="Enter blood group" disabled>
+                    </div>
+
+                    <div>
+                        <label>Nationality</label>
+                        <input type="text" name="nationality" value="{{ profile.nationality|default:'' }}" placeholder="Enter nationality" disabled>
+                    </div>
+
+                </div>
+
+                <hr>
+
+                <h4>Job Info</h4>
+                <div class="form-row">
+
+                    <div>
+                        <label>Employee ID</label>
+                        <input type="text" name="employee_id" value="{{ profile.employee_id|default:'' }}" placeholder="Employee ID" disabled>
+                    </div>
+
+                    <div>
+                        <label>Department</label>
+                        <input type="text" name="department" value="{{ profile.department|default:'' }}" placeholder="Enter department" disabled>
+                    </div>
+
+                    <div>
+                        <label>Designation</label>
+                        <input type="text" name="designation" value="{{ profile.designation|default:'' }}" placeholder="Enter designation" disabled>
+                    </div>
+
+                    <div>
+                        <label>Joining Date</label>
+                        <input type="date" name="joining_date" value="{{ profile.joining_date|date:'Y-m-d' }}" disabled>
+                    </div>
+
+                    <div>
+                        <label>Shift</label>
+                        <input type="text" name="shift" value="{{ profile.shift|default:'' }}" placeholder="Enter shift timing" disabled>
+                    </div>
+
+                    <div>
+                        <label>Salary</label>
+                        <input type="number" name="salary" value="{{ profile.salary|default:'' }}" placeholder="Enter salary" disabled>
+                    </div>
+
+                    <div>
+                        <label>Manager Name</label>
+                        <input type="text" name="manager_name" value="{{ profile.manager_name|default:'' }}" placeholder="Enter manager name" disabled>
+                    </div>
+
+                    <div>
+                        <label>Work Location</label>
+                        <input type="text" name="work_location" value="{{ profile.work_location|default:'' }}" placeholder="Enter work location" disabled>
+                    </div>
+
+                </div>
+
+                <hr>
+
+                <h4>Education</h4>
+                <div class="form-row">
+
+                    <div>
+                        <label>Qualification</label>
+                        <input type="text" name="qualification" value="{{ profile.qualification|default:'' }}" placeholder="Enter qualification" disabled>
+                    </div>
+
+                    <div>
+                        <label>College Name</label>
+                        <input type="text" name="college_name" value="{{ profile.college_name|default:'' }}" placeholder="Enter college name" disabled>
+                    </div>
+
+                    <div>
+                        <label>Passing Year</label>
+                        <input type="text" name="passing_year" value="{{ profile.passing_year|default:'' }}" placeholder="Enter passing year" disabled>
+                    </div>
+
+                </div>
+
+                <hr>
+
+                <h4>Documents</h4>
+                <div class="form-row">
+
+                    <div>
+                        <label>Aadhaar Number</label>
+                        <input type="text" name="aadhaar_number" value="{{ profile.aadhaar_number|default:'' }}" placeholder="Enter Aadhaar number" disabled>
+                    </div>
+
+                    <div>
+                        <label>PAN Number</label>
+                        <input type="text" name="pan_number" value="{{ profile.pan_number|default:'' }}" placeholder="Enter PAN number" disabled>
+                    </div>
+
+                </div>
+
+                <hr>
+
+                <h4>Emergency</h4>
+                <div class="form-row">
+
+                    <div>
+                        <label>Name</label>
+                        <input type="text" name="emergency_contact_name" value="{{ profile.emergency_contact_name|default:'' }}" placeholder="Enter contact name" disabled>
+                    </div>
+
+                    <div>
+                        <label>Phone</label>
+                        <input type="text" name="emergency_contact_phone" value="{{ profile.emergency_contact_phone|default:'' }}" placeholder="Enter emergency phone" disabled>
+                    </div>
+
+                    <div>
+                        <label>Relation</label>
+                        <input type="text" name="emergency_relation" value="{{ profile.emergency_relation|default:'' }}" placeholder="Enter relation" disabled>
+                    </div>
+
+                </div>
+
+                <hr>
+
+                <h4>Social</h4>
+                <div class="form-row">
+
+                    <div>
+                        <label>LinkedIn</label>
+                        <input type="url" name="linkedin" value="{{ profile.linkedin|default:'' }}" placeholder="https://linkedin.com/in/username" disabled>
+                    </div>
+
+                    <div>
+                        <label>Instagram</label>
+                        <input type="url" name="instagram" value="{{ profile.instagram|default:'' }}" placeholder="https://instagram.com/username" disabled>
+                    </div>
+
+                </div>
+
+                <hr>
+
+                <h4>Other</h4>
+                <div class="form-row">
+
+                    <div class="full-width">
+                        <label>Skills</label>
+                        <textarea name="skills" placeholder="Enter your skills" disabled>{{ profile.skills|default:'' }}</textarea>
+                    </div>
+
+                    <div class="full-width">
+                        <label>Bio</label>
+                        <textarea name="bio" placeholder="Write short bio" disabled>{{ profile.bio|default:'' }}</textarea>
+                    </div>
+
+                    <div class="full-width">
+                        <label>Hobbies</label>
+                        <textarea name="hobbies" placeholder="Enter hobbies" disabled>{{ profile.hobbies|default:'' }}</textarea>
+                    </div>
+
+                </div>
+
+                <hr>
+
+                <div class="btn-group">
+                    <button type="button" onclick="enableEdit()" class="edit-btn">Edit Profile</button>
+                    <button type="submit" class="save-btn">Save Profile</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+</div>
+
+<script>
+function enableEdit(){
+    let fields = document.querySelectorAll(".profile-card input, .profile-card textarea, .profile-card select");
+
+    fields.forEach(field => {
+        if(field.name !== "employee_id"){
+            field.disabled = false;
+        }
+    });
+
+    let fileInput = document.querySelector('input[type="file"]');
+    if(fileInput){
+        fileInput.disabled = false;
+    }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends "authentication/root.html" %}
+{% load static %}
+
+
+{% block title %} Leave {% endblock title %}
+
+
+{% block head %}
+<style>
+    .content {
+        padding: 20px;
+        flex-grow: 1;
+    }
+
+    .main-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .main-content h1 {
+        font-size: 24px;
+        color: #333;
+    }
+
+    .back-btn {
+        padding: 6px 12px;
+        border: 1px solid #000;
+        border-radius: 8px;
+        background-color: white;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .subheading {
+        margin-top: 10px;
+        font-size: 18px;
+        color: #666;
+    }
+
+    .no-details {
+        margin-top: 20px;
+        border: 1px solid #7c9cbf;
+        display: inline-block;
+        padding: 10px;
+        color: #3d5a73;
+    }
+</style>
+{% endblock head %}
+
+
+{% block body %}
+
+<div class="container" style="margin-top: 150px; margin-bottom: 100px;">
+
+
+    <div class="content">
+        <div class="main-content">
+            <h1>Leave</h1>
+            <a href="{% url 'leave_home' %}" class="back-btn">Back</a>
+        </div>
+        <p class="subheading">Recent Applications</p>
+
+        <div class="no-details">
+            <p>No details found.</p>
+        </div>
+    </div>
+
+
+
+</div>
+
+{% endblock body %}

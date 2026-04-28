@@ -1,0 +1,175 @@
+{% extends "manager/root.html" %}
+
+{% block body %}
+
+<style>
+/* Title */
+.container h2 {
+    font-size: 28px;
+    color: #ffdd57;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+/* Card */
+.request-card {
+    background: rgba(255, 255, 255, 0.08);
+    padding: 25px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.15);
+    backdrop-filter: blur(15px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    color: #fff;
+    width: 95%;
+    transition: 0.3s;
+}
+
+.request-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.6);
+}
+
+/* Grid layout */
+.request-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px 20px;
+}
+
+.request-grid p {
+    margin: 6px 0;
+    font-size: 15px;
+    word-break: break-word;
+}
+
+/* Labels highlight */
+.request-grid strong {
+    color: #ffdd57;
+}
+
+/* Full width fields */
+.full-width {
+    grid-column: 1 / -1;
+}
+
+/* Buttons */
+.request-actions {
+    margin-top: 18px;
+    display: flex;
+    gap: 15px;
+}
+
+.request-actions a {
+    text-decoration: none;
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 25px;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+/* Approve */
+.request-actions a.approve {
+    background: #27ae60;
+    color: #fff;
+}
+
+.request-actions a.approve:hover {
+    background: #2ecc71;
+}
+
+/* Reject */
+.request-actions a.reject {
+    background: #c0392b;
+    color: #fff;
+}
+
+.request-actions a.reject:hover {
+    background: #e74c3c;
+}
+
+/* Empty state */
+.empty-text {
+    text-align: center;
+    color: #fff;
+    font-size: 18px;
+    margin-top: 20px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .leave-container {
+        padding: 20px;
+    }
+
+    .request-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .leave-container h2 {
+        font-size: 22px;
+    }
+
+    .request-grid p {
+        font-size: 14px;
+    }
+
+    .request-actions a {
+        padding: 8px 15px;
+        font-size: 14px;
+    }
+}
+</style>
+
+<div class="container">
+
+    <h2>📋 Leave Requests</h2>
+
+    {% for app in applications %}
+    <div class="request-card">
+
+        <div class="request-grid">
+
+            <p><strong>Application ID:</strong> {{ app.id }}</p>
+            <p><strong>User:</strong> {{ app.user.username }}</p>
+
+            <p><strong>Leave Type:</strong> {{ app.leave_type }}</p>
+            <p><strong>Status:</strong> {{ app.status }}</p>
+
+            <p><strong>From Date:</strong> {{ app.from_date }}</p>
+            <p><strong>To Date:</strong> {{ app.to_date }}</p>
+
+            <p><strong>Total Days:</strong> {{ app.total_days }}</p>
+            <p><strong>Applied At:</strong> {{ app.applied_at }}</p>
+
+            <p class="full-width">
+                <strong>Reason:</strong> {{ app.reason }}
+            </p>
+
+            <p class="full-width">
+                <strong>Document:</strong>
+                {% if app.document %}
+                    <a href="{{ app.document.url }}" target="_blank" style="color:#00c6ff;">View File</a>
+                {% else %}
+                    No Document
+                {% endif %}
+            </p>
+
+        </div>
+
+        <div class="request-actions">
+            <a href="{% url 'approve_leave_request' app.id %}" class="approve">Approve</a>
+            <a href="{% url 'reject_leave_request' app.id %}" class="reject">Reject</a>
+        </div>
+
+    </div>
+
+    {% empty %}
+    <p style="text-align:center; color:#fff; font-size:18px;">No pending requests</p>
+    {% endfor %}
+
+</div>
+
+{% endblock %}

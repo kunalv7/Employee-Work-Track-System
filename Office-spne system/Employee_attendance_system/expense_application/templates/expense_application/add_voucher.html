@@ -1,0 +1,269 @@
+{% extends "authentication/root.html" %}
+{% load static %}
+
+{% block title %} Add Voucher {% endblock title %}
+
+{% block head %}
+<style>
+
+/* ===== MAIN WRAPPER ===== */
+.main-container {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+}
+
+/* ===== GLASS CARD ===== */
+.voucher-card {
+    width: 100%;
+    max-width: 520px;
+    backdrop-filter: blur(15px);
+    background: rgba(255, 255, 255, 0.08);
+    padding: 18px;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #fff;
+}
+
+/* ===== HEADER ===== */
+.voucher-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.voucher-header h2 {
+    font-size: 18px;
+    margin: 0;
+}
+
+.voucher-header p {
+    font-size: 12px;
+    color: #ccc;
+}
+
+/* ===== BACK BUTTON ===== */
+.back-btn {
+    padding: 5px 10px;
+    border: none;
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+/* ===== FORM ===== */
+.form-group {
+    margin-bottom: 12px;
+}
+
+.form-group label {
+    font-size: 13px;
+    margin-bottom: 3px;
+    display: block;
+}
+
+/* INPUT + SELECT */
+.form-group select,
+.form-group input {
+    width: 100%;
+    padding: 8px;
+    border-radius: 6px;
+    border: none;
+    outline: none;
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+}
+
+/* dropdown text fix */
+select option {
+    color: #000;
+}
+
+/* ===== ROW ===== */
+.form-row {
+    display: flex;
+    gap: 8px;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+/* ===== BUTTONS ===== */
+.form-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.search-btn {
+    flex: 1;
+    padding: 9px;
+    border: none;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    color: #fff;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.reset-btn {
+    flex: 1;
+    padding: 9px;
+    border: none;
+    border-radius: 6px;
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+/* ===== TABLET ===== */
+@media (max-width: 768px) {
+    .voucher-card {
+        padding: 15px;
+    }
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 480px) {
+
+    .voucher-header h2 {
+        font-size: 16px;
+    }
+
+    .voucher-header p {
+        font-size: 11px;
+    }
+
+    .form-row {
+        flex-direction: column;
+    }
+
+    .form-buttons {
+        flex-direction: column;
+    }
+
+    .search-btn,
+    .reset-btn {
+        width: 100%;
+    }
+}
+
+</style>
+{% endblock head %}
+
+{% extends "authentication/root.html" %}
+{% load static %}
+
+{% block title %} Add Voucher {% endblock title %}
+
+{% block body %}
+<div class="container">
+<div class="main-container">
+
+<div class="voucher-card">
+
+    <!-- HEADER -->
+    <div class="voucher-header">
+        <div>
+            <h2>Expense</h2>
+            <p>Final Submit</p>
+        </div>
+        <button class="back-btn" onclick="history.back()">&lt;&lt;</button>
+    </div>
+
+    <!-- FORM -->
+    <form method="POST">
+        {% csrf_token %}
+
+        <!-- CLAIM TYPE -->
+        <div class="form-group">
+            <label>Claim Type</label>
+            <select name="claim_type">
+                <option value="">All</option>
+                <option value="Claimable">Claimable</option>
+                <option value="Non-Claimable">Non-Claimable</option>
+            </select>
+        </div>
+
+        <!-- ROW -->
+        <div class="form-row">
+            <div class="form-group">
+                <label>Travel Type</label>
+                <select name="travel_type">
+                    <option value="">All</option>
+                    <option value="Office">Office</option>
+                    <option value="Client Visit">Client Visit</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>City</label>
+                <select name="city">
+                    <option value="">All</option>
+                    <option value="Mumbai">Mumbai</option>
+                    <option value="Delhi">Delhi</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- DATE -->
+        <div class="form-row">
+            <div class="form-group">
+                <label>From Date</label>
+                <input type="date" name="from_date">
+            </div>
+
+            <div class="form-group">
+                <label>To Date</label>
+                <input type="date" name="to_date">
+            </div>
+        </div>
+
+        <!-- BUTTONS -->
+        <div class="form-buttons">
+            <button type="submit" class="search-btn">Search</button>
+            <button type="reset" class="reset-btn">Reset</button>
+        </div>
+
+    </form>
+
+    <!-- ================= RESULTS ================= -->
+    {% if expenses %}
+    <hr>
+
+    <h3 style="margin-top:10px;">Results</h3>
+
+    <div style="overflow-x:auto;">
+    <table style="width:100%; margin-top:10px; border-collapse: collapse; font-size:13px;">
+        <tr style="background: rgba(255,255,255,0.2);">
+            <th style="padding:6px;">Date</th>
+            <th style="padding:6px;">City</th>
+            <th style="padding:6px;">Expense</th>
+            <th style="padding:6px;">Amount</th>
+        </tr>
+
+        {% for exp in expenses %}
+        <tr style="border-bottom:1px solid rgba(255,255,255,0.1); text-align:center;">
+            <td style="padding:6px;">{{ exp.date }}</td>
+            <td style="padding:6px;">{{ exp.city }}</td>
+            <td style="padding:6px;">{{ exp.expense }}</td>
+            <td style="padding:6px;">{{ exp.amount }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    </div>
+
+    {% elif expenses is not None %}
+    <p style="text-align:center; margin-top:10px;">No data found</p>
+    {% endif %}
+    <!-- ================= END ================= -->
+
+</div>
+</div>
+</div>
+{% endblock %}

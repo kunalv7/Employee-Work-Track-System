@@ -1,0 +1,189 @@
+{% extends "authentication/root.html" %}
+{% load static %}
+
+{% block title %} Attendance {% endblock title %}
+
+{% block head %}
+<style>
+
+/* MAIN */
+.main-content {
+    padding: 10px;
+}
+
+/* LINK RESET */
+.main-content a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* HEADING */
+.main-content h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+    color: #fff;
+}
+
+/*  GLASS CARD */
+.card {
+    display: flex;
+    align-items: center;
+    padding: 14px 16px;
+    margin-bottom: 15px;
+    border-radius: 16px;
+
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    border: 1px solid rgba(255,255,255,0.15);
+
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+
+    transition: all 0.3s ease;
+}
+
+/* HOVER */
+.card:hover {
+    transform: translateY(-3px) scale(1.01);
+    background: rgba(255,255,255,0.1);
+}
+
+/* DISABLED */
+.card-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ICON */
+.card-icon {
+    font-size: 18px;
+    margin-right: 12px;
+
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    color: #222;
+
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+}
+
+/* TEXT */
+.card span {
+    font-size: 14px;
+    font-weight: 500;
+    color: #fff;
+}
+
+/* MESSAGE */
+.msg {
+    color: #ff4d4d;
+    margin-left: 5px;
+    margin-bottom: 10px;
+    font-size: 13px;
+}
+
+/* MOBILE */
+@media (max-width: 480px) {
+
+    .main-content h2 {
+        font-size: 18px;
+    }
+
+    .card {
+        padding: 12px;
+    }
+
+    .card span {
+        font-size: 13px;
+    }
+}
+
+</style>
+{% endblock head %}
+
+{% block body %}
+
+<div class="container">
+    <div class="main-content">
+
+        <h2>⏱ Attendance Dashboard</h2>
+
+        <!-- CLOCK IN -->
+
+        {% if clock_in_done %}
+            <div class="card card-disabled">
+                <div class="card-icon">
+                    <i class="fas fa-sign-in-alt"></i>
+                </div>
+                <span>Clock In</span>
+            </div>
+
+            {% if not clock_out_done %}
+                <p class="msg">Do Clock Out first to do Clock In again</p>
+            {% endif %}
+
+        {% else %}
+
+            <a href="{% url 'clock_in_attendance' %}">
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="fas fa-sign-in-alt"></i>
+                    </div>
+                    <span>Clock In</span>
+                </div>
+            </a>
+
+        {% endif %}
+
+
+
+        <!-- CLOCK OUT -->
+
+        {% if clock_out_done %}
+
+            <div class="card card-disabled">
+                <div class="card-icon">
+                    <i class="fas fa-sign-out-alt"></i>
+                </div>
+                <span>Clocked Out</span>
+            </div>
+
+            <p class="msg">You already clocked out today</p>
+
+        {% else %}
+
+            <a href="{% url 'clock_out_attendance' %}">
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </div>
+                    <span>Clock Out</span>
+                </div>
+            </a>
+
+        {% endif %}
+
+
+
+        <!-- LIST VIEW -->
+
+        <a href="{% url 'list_attendance' %}">
+            <div class="card">
+                <div class="card-icon">
+                    <i class="fas fa-list"></i>
+                </div>
+                <span>View Attendance Records</span>
+            </div>
+        </a>
+
+    </div>
+</div>
+
+{% endblock body %}

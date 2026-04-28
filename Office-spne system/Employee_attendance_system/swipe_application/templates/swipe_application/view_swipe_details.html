@@ -1,0 +1,346 @@
+{% extends "authentication/root.html" %}
+{% load static %}
+
+{% block title %} View Swipe Details {% endblock title %}
+
+{% block head %}
+<style>
+
+/* ===== CONTAINER ===== */
+.container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 50px 10px 50px 10px;
+}
+
+/* ===== MAIN GLASS BOX ===== */
+.content {
+    width: 100%;
+    max-width: 1100px;
+    padding: 25px;
+
+    backdrop-filter: blur(20px);
+    background: rgba(255,255,255,0.08);
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.1);
+
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+}
+
+/* ===== HEADER FLEX ===== */
+.header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.header-flex h3 {
+    margin: 0;
+    font-size: 22px;
+    color: #fff;
+}
+
+/* ===== BACK BUTTON ===== */
+.back-btn {
+    padding: 9px 20px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-size: 13px;
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    color: white;
+    transition: 0.3s;
+}
+
+.back-btn:hover {
+    transform: scale(1.05);
+}
+
+/* ===== MESSAGE BOX ===== */
+.message-box {
+    background: rgba(0,255,100,0.1);
+    color: #00ff9d;
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+/* ===== DASHBOARD CARDS ===== */
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.dashboard-card {
+    padding: 16px;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.1);
+    text-align: center;
+    transition: 0.3s;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-6px) scale(1.02);
+}
+
+.card-title {
+    font-size: 13px;
+    color: #bbb;
+}
+
+.card-count {
+    font-size: 26px;
+    font-weight: bold;
+    color: #fff;
+}
+
+.card-link {
+    display: block;
+    margin-top: 6px;
+    font-size: 12px;
+    color: #00c6ff;
+    text-decoration: none;
+}
+
+/* COLORS */
+.total { border-left: 5px solid #00c6ff; }
+.approved { border-left: 5px solid #00ff9d; }
+.rejected { border-left: 5px solid #ff4d4d; }
+.pending { border-left: 5px solid #ffd200; }
+
+/* ===== TABLE WRAPPER ===== */
+.table-wrapper {
+    overflow-x: auto;
+    border-radius: 15px;
+}
+
+/* ===== TABLE ===== */
+table {
+    width: 100%;
+    min-width: 750px;
+    border-collapse: collapse;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+/* TABLE HEADER */
+th {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    padding: 14px;
+    font-size: 14px;
+}
+
+/* TABLE ROWS */
+td {
+    padding: 12px;
+    text-align: center;
+    color: #ddd;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    font-size: 14px;
+}
+
+tr:hover {
+    background: rgba(255,255,255,0.06);
+    transform: scale(1.005);
+}
+
+/* STATUS COLORS */
+.status-approved { color: #00ff9d; font-weight: bold; }
+.status-rejected { color: #ff4d4d; font-weight: bold; }
+.status-pending { color: #ffd200; font-weight: bold; }
+
+/* MOBILE CARD VIEW */
+.mobile-cards {
+    display: none;
+}
+
+.mobile-card {
+    margin-bottom: 12px;
+    padding: 14px;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.mobile-card .row {
+    margin-bottom: 6px;
+    font-size: 13px;
+    color: #ddd;
+}
+
+.mobile-card span {
+    color: #aaa;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+
+    .content {
+        padding: 15px;
+    }
+
+    h3 {
+        font-size: 18px;
+    }
+
+    .desktop-table {
+        display: none;
+    }
+
+    .mobile-cards {
+        display: block;
+    }
+
+}
+
+</style>
+{% endblock head %}
+
+{% block body %}
+
+<div class="container">
+    <div class="content">
+
+        <!-- HEADER WITH BACK BUTTON -->
+        <div class="header-flex">
+            <h3>📊 Swipe Summary</h3>
+            <a href="{% url 'swipe_home' %}" class="back-btn">Back</a>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message-box">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="card-grid">
+
+            <div class="dashboard-card total">
+                <div class="card-title">Total</div>
+                <div class="card-count">{{ total_swipes }}</div>
+            </div>
+
+            <div class="dashboard-card approved">
+                <div class="card-title">Approved</div>
+                <div class="card-count">{{ approved_count }}</div>
+                <a href="{% url 'approve_swipe' %}" class="card-link">View</a>
+            </div>
+
+            <div class="dashboard-card rejected">
+                <div class="card-title">Rejected</div>
+                <div class="card-count">{{ rejected_count }}</div>
+                <a href="{% url 'reject_swipe' %}" class="card-link">View</a>
+            </div>
+
+            <div class="dashboard-card pending">
+                <div class="card-title">Pending</div>
+                <div class="card-count">{{ pending_count }}</div>
+                <a href="{% url 'recent_swipe' %}" class="card-link">View</a>
+            </div>
+
+        </div>
+
+        <!-- REQUESTS HEADER -->
+        <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h3>Your Swipe Requests</h3>
+        </div>
+
+        <!-- DESKTOP TABLE -->
+        <div class="table-wrapper desktop-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Date</th>
+                        <th>Category</th>
+                        <th>In</th>
+                        <th>Out</th>
+                        <th>Status</th>
+                        <th>Manager</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for req in requests %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ req.request_date }}</td>
+                        <td>{{ req.get_category_display }}</td>
+                        <td>{{ req.in_time|default:"-" }}</td>
+                        <td>{{ req.out_time|default:"-" }}</td>
+
+                        <td>
+                            {% if req.status == "approved" %}
+                                <span class="status-approved">Approved</span>
+                            {% elif req.status == "rejected" %}
+                                <span class="status-rejected">Rejected</span>
+                            {% else %}
+                                <span class="status-pending">Pending</span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if req.manager %}
+                                {{ req.manager.username }}
+                            {% else %}
+                                Not Assigned
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7">No requests yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- MOBILE CARDS -->
+        <div class="mobile-cards">
+            {% for req in requests %}
+            <div class="mobile-card">
+
+                <div class="row"><strong>#{{ forloop.counter }}</strong></div>
+                <div class="row"><span>Date:</span> {{ req.request_date }}</div>
+                <div class="row"><span>Category:</span> {{ req.get_category_display }}</div>
+                <div class="row"><span>In:</span> {{ req.in_time|default:"-" }}</div>
+                <div class="row"><span>Out:</span> {{ req.out_time|default:"-" }}</div>
+
+                <div class="row">
+                    <span>Status:</span>
+                    {% if req.status == "approved" %}
+                        <b class="status-approved">Approved</b>
+                    {% elif req.status == "rejected" %}
+                        <b class="status-rejected">Rejected</b>
+                    {% else %}
+                        <b class="status-pending">Pending</b>
+                    {% endif %}
+                </div>
+
+                <div class="row">
+                    <span>Manager:</span>
+                    {% if req.manager %}
+                        {{ req.manager.username }}
+                    {% else %}
+                        Not Assigned
+                    {% endif %}
+                </div>
+
+            </div>
+            {% empty %}
+            <p style="color:white;">No requests yet.</p>
+            {% endfor %}
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

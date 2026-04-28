@@ -1,0 +1,341 @@
+{% extends "authentication/root.html" %}
+{% load static %}
+
+{% block title %} Attendance Records {% endblock %}
+
+{% block head %}
+<style>
+
+/* ===== MAIN CONTAINER CENTER ===== */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    margin: 40px 0px 40px;
+    padding: 20px;
+}
+
+/* ===== CARD ===== */
+.card {
+    width: 100%;
+    max-width: 1000px;
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 25px;
+}
+
+/* ===== HEADING ===== */
+h2 {
+    margin-bottom: 20px;
+    font-size: 22px;
+    text-align: center;
+}
+
+/* ===== FORM ===== */
+.filter-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+.filter-form select,
+.filter-form button {
+    padding: 10px;
+    border-radius: 6px;
+    border: none;
+    outline: none;
+    min-width: 120px;
+}
+
+/* ===== BUTTONS ===== */
+.btn {
+    background: #0078d7;
+    color: white;
+    cursor: pointer;
+}
+
+.btn-refresh {
+    background: #444;
+}
+
+/* ===== CHECKBOX ===== */
+.checkbox {
+    width: 100%;
+    text-align: center;
+    margin-top: 10px;
+}
+
+/* ===== TABLE ===== */
+.table-wrapper {
+    overflow-x: auto;
+    margin-top: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;
+    background: rgba(255,255,255,0.15);
+    color: black;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid gray;
+    text-align: left;
+    color: white;
+}
+
+th {
+    background-color: #0078d7;
+    color: white;
+}
+
+tr:nth-child(even) {
+    background: rgba(255,255,255,0.15);
+}
+
+/* ===== STATUS ===== */
+.in {
+    color: green;
+    font-weight: bold;
+}
+
+.out {
+    color: red;
+    font-weight: bold;
+}
+
+/* ===== IMAGE ===== */
+img {
+    max-width: 80px;
+    border-radius: 6px;
+}
+
+/* ===== MOBILE CARDS ===== */
+.mobile-cards {
+    display: none;
+}
+
+.record-card {
+    background: rgba(255,255,255,0.15);
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    font-size: 14px;
+}
+
+.record-card div {
+    margin-bottom: 6px;
+}
+
+/* ===== NO DATA ===== */
+.no-data {
+    text-align: center;
+    padding: 30px;
+    color: #ddd;
+}
+
+/* ===== MOBILE FIX ===== */
+@media (max-width: 768px) {
+
+    .container {
+        margin-top: 40px;
+        padding: 10px;
+    }
+
+    .card {
+        padding: 20px;
+    }
+
+    h2 {
+        font-size: 18px;
+    }
+
+    /* FORM */
+    .filter-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-form select,
+    .filter-form button {
+        width: 100%;
+    }
+
+    .checkbox {
+        text-align: left;
+    }
+
+    /* HIDE TABLE */
+    .table-wrapper {
+        display: none;
+    }
+
+    /* SHOW CARDS */
+    .mobile-cards {
+        display: block;
+        margin-top: 15px;
+    }
+
+    img {
+        max-width: 60px;
+    }
+}
+
+</style>
+{% endblock %}
+
+{% block body %}
+
+<div class="container">
+    <div class="card">
+
+        <h2>Your Attendance Records</h2>
+
+        <!-- FILTER FORM -->
+        <form method="get" class="filter-form">
+
+            <select name="month">
+                <option value="01">January</option>
+                <option value="02">February</option>
+                <option value="03">March</option>
+                <option value="04">April</option>
+                <option value="05">May</option>
+                <option value="06">June</option>
+                <option value="07">July</option>
+                <option value="08">August</option>
+                <option value="09">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
+            </select>
+
+            <select name="year">
+                <option value="2026">2026</option>
+                <option value="2025">2025</option>
+                <option value="2024">2024</option>
+                <option value="2023">2023</option>
+            </select>
+
+            <button type="submit" class="btn">Submit</button>
+
+            <a href="{% url 'list_attendance' %}">
+                <button type="button" class="btn btn-refresh">Refresh</button>
+            </a>
+
+            <label class="checkbox">
+                <input type="checkbox" name="archive">
+                Get Report From Archive Data
+            </label>
+
+        </form>
+
+        {% if records %}
+
+        <!-- DESKTOP TABLE -->
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Time</th>
+                        <th>Location</th>
+                        <th>Fence</th>
+                        <th>Remark</th>
+                        <th>Photo</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    {% for record in records %}
+                    <tr>
+
+                        <td>{{ record.timestamp|date:"Y-m-d" }}</td>
+
+                        <td>
+                            {% if forloop.counter|divisibleby:2 %}
+                                <span class="out">Out</span>
+                            {% else %}
+                                <span class="in">In</span>
+                            {% endif %}
+                        </td>
+
+                        <td>{{ record.timestamp|time:"h:i:A" }}</td>
+
+                        <td style="min-width:200px;">
+                            {{ record.location }}
+                        </td>
+
+                        <td>{{ record.fence }}</td>
+
+                        <td>{{ record.remark|default:"—" }}</td>
+
+                        <td>
+                            {% if record.photo %}
+                                <img src="{{ record.photo.url }}">
+                            {% else %}
+                                No photo
+                            {% endif %}
+                        </td>
+
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+
+        <!-- MOBILE CARDS -->
+        <div class="mobile-cards">
+
+            {% for record in records %}
+            <div class="record-card">
+
+                <div><strong>Date:</strong> {{ record.timestamp|date:"Y-m-d" }}</div>
+
+                <div>
+                    <strong>Status:</strong>
+                    {% if forloop.counter|divisibleby:2 %}
+                        <span class="out">Out</span>
+                    {% else %}
+                        <span class="in">In</span>
+                    {% endif %}
+                </div>
+
+                <div><strong>Time:</strong> {{ record.timestamp|time:"h:i:A" }}</div>
+
+                <div><strong>Location:</strong> {{ record.location }}</div>
+
+                <div><strong>Fence:</strong> {{ record.fence }}</div>
+
+                <div><strong>Remark:</strong> {{ record.remark|default:"—" }}</div>
+
+                <div>
+                    <strong>Photo:</strong><br>
+                    {% if record.photo %}
+                        <img src="{{ record.photo.url }}">
+                    {% else %}
+                        No photo
+                    {% endif %}
+                </div>
+
+            </div>
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+            <p class="no-data">Yet attendance not recorded.</p>
+        {% endif %}
+
+    </div>
+</div>
+
+{% endblock %}

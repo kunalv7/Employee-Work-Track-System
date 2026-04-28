@@ -1,0 +1,217 @@
+{% extends "authentication/root.html" %}
+{% load static %}
+
+{% block title %}Recent Leave Applications{% endblock title %}
+
+{% block head %}
+<style>
+
+.content {
+    padding: 10px;
+}
+
+/* HEADER */
+.main-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.main-content h1 {
+    font-size: 20px;
+    color: #fff;
+}
+
+/* BACK BUTTON */
+.back-btn {
+    padding: 7px 14px;
+    border-radius: 20px;
+    border: none;
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    color: white;
+    font-size: 13px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.back-btn:hover {
+    transform: scale(1.05);
+}
+
+/* SUBHEADING */
+.subheading {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #ccc;
+}
+
+/* 🔥 CARD (BLUE THEME APPLIED) */
+.card {
+    display: flex;
+    margin: 15px 0;
+    padding: 14px;
+    border-radius: 15px;
+
+    backdrop-filter: blur(12px);
+    background: rgba(255,255,255,0.08);
+    border-left: 4px solid #00c6ff;
+
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+
+    transition: 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+}
+
+/* ICON */
+.card-icon {
+    background: #00c6ff;
+    color: #333;
+    font-size: 16px;
+    font-weight: bold;
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    margin-right: 12px;
+}
+
+/* CONTENT */
+.card-content {
+    flex-grow: 1;
+}
+
+.card-content p {
+    margin: 3px 0;
+    font-size: 13px;
+    color: #eee;
+}
+
+.date-line {
+    font-weight: bold;
+    color: #fff;
+}
+
+/* STATUS COLORS */
+.status-approved {
+    color: #00ff9d;
+}
+
+.status-rejected {
+    color: #ff4d4d;
+}
+
+.status-pending {
+    color: #ffd200;
+}
+
+/* EMPTY */
+.no-details {
+    margin-top: 20px;
+    padding: 12px;
+    border-radius: 10px;
+
+    background: rgba(255,255,255,0.08);
+    color: #ccc;
+    text-align: center;
+}
+
+/* 📱 MOBILE */
+@media (max-width: 480px) {
+
+    .main-content h1 {
+        font-size: 18px;
+    }
+
+    .card-content p {
+        font-size: 12px;
+    }
+
+    .back-btn {
+        font-size: 12px;
+        padding: 6px 12px;
+    }
+
+}
+
+</style>
+{% endblock head %}
+
+{% block body %}
+<div class="container">
+    <div class="content">
+
+        <div class="main-content">
+            <h1>Leave</h1>
+            <a href="{% url 'leave_home' %}" class="back-btn">Back</a>
+        </div>
+
+        <p class="subheading">Recent Applications</p>
+
+        {% if applications %}
+
+        {% for app in applications %}
+        <div class="card">
+
+            <!-- ICON -->
+            <div class="card-icon">
+                {{ app.leave_type|slice:":1" }}
+            </div>
+
+            <div class="card-content">
+                <p><strong>App. ID: {{ app.id }}</strong></p>
+
+                <p class="date-line">
+                    {{ app.from_date|date:"d-M-Y" }} 
+                    to 
+                    {{ app.to_date|date:"d-M-Y" }}
+                </p>
+
+                <p>
+                    ({{ app.from_date|date:"D" }} to {{ app.to_date|date:"D" }})
+                </p>
+
+                <p>{{ app.reason|default:"No reason provided" }}</p>
+
+                <p>Days: {{ app.total_days }}</p>
+
+                {% if app.document %}
+                    <p>
+                        Document: 
+                        <a href="{{ app.document.url }}" target="_blank" style="color:#00c6ff;">
+                            View
+                        </a>
+                    </p>
+                {% endif %}
+
+                <p>
+                    {% if app.status == "approved" %}
+                        <strong class="status-approved">Approved</strong>
+                    {% elif app.status == "rejected" %}
+                        <strong class="status-rejected">Rejected</strong>
+                    {% else %}
+                        <strong class="status-pending">Pending</strong>
+                    {% endif %}
+                </p>
+
+            </div>
+
+        </div>
+        {% endfor %}
+
+        {% else %}
+        <div class="no-details">
+            <p>No Recent leave applications found.</p>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+{% endblock body %}

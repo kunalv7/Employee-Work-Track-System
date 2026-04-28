@@ -1,0 +1,192 @@
+{% extends "manager/root.html" %}
+
+{% block body %}
+
+<style>
+
+
+
+
+.info-card{
+    width:100%;
+    max-width:1000px;
+
+    padding:30px;
+    border-radius:18px;
+    color:white;
+    box-shadow:0 10px 40px rgba(0,0,0,0.5);
+}
+
+.info-header{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.info-header h2{
+    color:#ffd369;
+}
+
+.profile-img{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.profile-img img{
+    width:130px;
+    height:130px;
+    border-radius:50%;
+    object-fit:cover;
+    border:3px solid white;
+}
+
+.section-title{
+    margin-top:20px;
+    padding-bottom:5px;
+    border-bottom:1px solid rgba(255,255,255,0.2);
+    color:#00eaff;
+}
+
+.info-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+    margin-top:10px;
+}
+
+.info-item{
+    background:rgba(255,255,255,0.08);
+    padding:12px;
+    border-radius:10px;
+}
+
+.label{
+    font-size:12px;
+    color:#bbb;
+}
+
+.value{
+    font-weight:600;
+    color:#fff;
+}
+
+.active{color:#00ffae;}
+.inactive{color:#ff5c5c;}
+
+.back-btn{
+    display:inline-block;
+    margin-top:25px;
+    padding:10px 18px;
+    border-radius:25px;
+    background:linear-gradient(135deg,#00c6ff,#0072ff);
+    color:white;
+    text-decoration:none;
+}
+
+@media(max-width:768px){
+    .info-grid{grid-template-columns:1fr;}
+}
+</style>
+
+<div class="container">
+<div class="info-card">
+
+    <div class="info-header">
+        <h2>👤 Employee Details</h2>
+    </div>
+
+    <!-- IMAGE -->
+    <div class="profile-img">
+        {% if profile.profile_image %}
+            <img src="{{ profile.profile_image.url }}">
+        {% else %}
+            <img src="/media/default-user-image/default-user-image.jpg">
+        {% endif %}
+    </div>
+
+    <!-- BASIC INFO -->
+    <div class="section-title">Basic Info</div>
+    <div class="info-grid">
+        <div class="info-item"><div class="label">Username</div><div class="value">{{ employee.username }}</div></div>
+        <div class="info-item"><div class="label">Email</div><div class="value">{{ employee.email|default:"-" }}</div></div>
+        <div class="info-item"><div class="label">First Name</div><div class="value">{{ employee.first_name|default:"-" }}</div></div>
+        <div class="info-item"><div class="label">Last Name</div><div class="value">{{ employee.last_name|default:"-" }}</div></div>
+        <div class="info-item"><div class="label">Status</div>
+            <div class="value">
+                {% if employee.is_active %}
+                    <span class="active">Active</span>
+                {% else %}
+                    <span class="inactive">Inactive</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- PERSONAL INFO -->
+    <div class="section-title">Personal Info</div>
+    <div class="info-grid">
+        <div class="info-item"><div class="label">Phone</div><div class="value">{{ profile.phone|default:"-" }}</div></div>
+        <div class="info-item"><div class="label">Alt Phone</div><div class="value">{{ profile.alternate_phone|default:"-" }}</div></div>
+        <div class="info-item"><div class="label">Address</div><div class="value">{{ profile.address|default:"-" }}</div></div>
+        <div class="info-item"><div class="label">City</div><div class="value">{{ profile.city|default:"-" }}</div></div>
+        <div class="info-item"><div class="label">State</div><div class="value">{{ profile.state|default:"-" }}</div></div>
+        <div class="info-item"><div class="label">Country</div><div class="value">{{ profile.country|default:"-" }}</div></div>
+        <div class="info-item"><div class="label">Pincode</div><div class="value">{{ profile.pincode|default:"-" }}</div></div>
+        <div class="info-item"><div class="label">DOB</div><div class="value">{{ profile.dob|date:"d M Y"|default:"-" }}</div></div>
+    </div>
+
+    <!-- JOB INFO -->
+    <div class="section-title">Job Info</div>
+    <div class="info-grid">
+        <div class="info-item"><div class="label">Employee ID</div><div class="value">{{ profile.employee_id|default:"-" }}</div></div>
+        <div class="info-item"><div class="label">Department</div><div class="value">{{ profile.department|default:"-" }}</div></div>
+        <div class="info-item"><div class="label">Designation</div><div class="value">{{ profile.designation|default:"-" }}</div></div>
+        <div class="info-item"><div class="label">Joining Date</div><div class="value">{{ profile.joining_date|date:"d M Y"|default:"-" }}</div></div>
+        <div class="info-item"><div class="label">Salary</div><div class="value">{{ profile.salary|default:"-" }}</div></div>
+    </div>
+
+    <!-- EDUCATION -->
+    <div class="section-title">Education</div>
+    <div class="info-grid">
+        <div class="info-item"><div class="label">Qualification</div><div class="value">{{ profile.qualification|default:"-" }}</div></div>
+        <div class="info-item"><div class="label">College</div><div class="value">{{ profile.college_name|default:"-" }}</div></div>
+        <div class="info-item"><div class="label">Passing Year</div><div class="value">{{ profile.passing_year|default:"-" }}</div></div>
+    </div>
+
+    <!-- DOCUMENTS -->
+    <div class="section-title">Documents</div>
+    <div class="info-grid">
+        <div class="info-item"><div class="label">Aadhaar</div><div class="value">{{ profile.aadhaar_number|default:"-" }}</div></div>
+        <div class="info-item"><div class="label">PAN</div><div class="value">{{ profile.pan_number|default:"-" }}</div></div>
+    </div>
+
+    <!-- EMERGENCY -->
+    <div class="section-title">Emergency</div>
+    <div class="info-grid">
+        <div class="info-item"><div class="label">Name</div><div class="value">{{ profile.emergency_contact_name|default:"-" }}</div></div>
+        <div class="info-item"><div class="label">Phone</div><div class="value">{{ profile.emergency_contact_phone|default:"-" }}</div></div>
+    </div>
+
+    <!-- SOCIAL -->
+    <div class="section-title">Social</div>
+    <div class="info-grid">
+        <div class="info-item"><div class="label">LinkedIn</div><div class="value">{{ profile.linkedin|default:"-" }}</div></div>
+        <div class="info-item"><div class="label">Instagram</div><div class="value">{{ profile.instagram|default:"-" }}</div></div>
+    </div>
+
+    <!-- OTHER -->
+    <div class="section-title">Other</div>
+    <div class="info-grid">
+        <div class="info-item"><div class="label">Skills</div><div class="value">{{ profile.skills|default:"-" }}</div></div>
+        <div class="info-item"><div class="label">Bio</div><div class="value">{{ profile.bio|default:"-" }}</div></div>
+        <div class="info-item"><div class="label">Hobbies</div><div class="value">{{ profile.hobbies|default:"-" }}</div></div>
+    </div>
+
+    <!-- BACK -->
+    <div style="text-align:center;">
+        <a href="{% url 'employee_list' %}" class="back-btn">Back</a>
+    </div>
+
+</div>
+</div>
+
+{% endblock %}

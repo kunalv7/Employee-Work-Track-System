@@ -1,0 +1,164 @@
+{% extends "authentication/root.html" %}
+
+{% block head %}
+<style>
+/* CARD */
+.voucher-card{
+    border-radius:6px;
+    margin-bottom:20px;
+    overflow:hidden;
+    border:1px solid #ddd;
+}
+
+/* HEADER */
+.voucher-header{
+    padding:10px;
+    border-bottom:1px solid #ccc;
+    font-size:14px;
+}
+
+/* AMOUNT */
+.amount-box{
+    padding:10px;
+    border-bottom:1px solid #ccc;
+    font-weight:bold;
+}
+
+.final{
+    color:green;
+}
+
+/* DATE ROW */
+.date-row{
+    display:flex;
+    border-bottom:1px solid #ccc;
+}
+
+.date-col{
+    flex:1;
+    padding:10px;
+    border-right:1px solid #ccc;
+    font-size:13px;
+}
+
+.date-col:last-child{
+    border-right:none;
+}
+
+/* DETAILS */
+.details{
+    padding:10px;
+    font-size:13px;
+    line-height:1.5;
+}
+
+/* TABLE */
+.table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:10px;
+}
+
+.table th{
+    background:#c59b5f;
+    color:white;
+    padding:8px;
+    font-size:12px;
+}
+
+.table td{
+    padding:8px;
+    border-top:1px solid #ddd;
+    font-size:12px;
+    text-align:center;
+}
+
+/* TITLE */
+h2{
+    text-align:center;
+    margin-bottom:20px;
+    color:white;
+}
+
+/* BACK BUTTON */
+.back-btn{
+    display:block;
+    text-align:center;
+    margin-top:15px;
+    padding:10px;
+    background:#007bff;
+    color:white;
+    text-decoration:none;
+    border-radius:6px;
+}
+
+.back-btn:hover{
+    background:#0056b3;
+}
+
+</style>
+{% endblock %}
+
+
+{% block body %}
+
+<div class="container">
+
+<h2>💼 Expense Voucher</h2>
+
+<div class="voucher-card">
+
+    <!-- VOUCHER NO -->
+    <div class="voucher-header">
+        Voucher No. : {{ expense.id }}
+    </div>
+
+    <!-- AMOUNT -->
+    <div class="amount-box">
+        Amount : {{ expense.amount }}
+        <span class="final">({{ expense.final_amount }})</span>
+    </div>
+
+    <!-- DATE -->
+    <div class="date-row">
+        <div class="date-col">
+            From date : {{ expense.date|date:"d-M-y" }}
+        </div>
+        <div class="date-col">
+            To date : {{ expense.date|date:"d-M-y" }}
+        </div>
+    </div>
+
+    <!-- DETAILS -->
+    <div class="details">
+        <div>Claim Type : {{ expense.claim_type }}</div>
+        <div>Travel Type : {{ expense.travel_type }}</div>
+        <div>City : {{ expense.city }}</div>
+        <div>Project : {{ expense.project }}</div>
+        <div>Narration : {{ expense.remarks }}</div>
+    </div>
+
+    <!-- TABLE -->
+    <table class="table">
+        <tr>
+            <th>Date</th>
+            <th>Expense Name</th>
+            <th>Claimed Amount</th>
+            <th>Approved Amount</th>
+        </tr>
+
+        <tr>
+            <td>{{ expense.date|date:"d-M-y" }}</td>
+            <td>{{ expense.expense }}</td>
+            <td>{{ expense.amount }}</td>
+            <td>{{ expense.final_amount }}</td>
+        </tr>
+    </table>
+
+</div>
+
+<a href="{% url 'recent_expenses' %}" class="back-btn">⬅ Back</a>
+
+</div>
+
+{% endblock %}

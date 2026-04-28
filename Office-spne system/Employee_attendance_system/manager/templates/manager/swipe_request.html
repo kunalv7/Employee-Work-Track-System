@@ -1,0 +1,115 @@
+{% extends "manager/root.html" %}
+
+{% block body %}
+
+<style>
+/* Page title */
+.container h2 {
+    font-size: 28px;
+    color: #ffdd57;
+    text-align: center;
+}
+
+/* Individual request cards */
+.request-card {
+    background: rgba(255, 255, 255, 0.08);
+    padding: 25px 30px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.15);
+    backdrop-filter: blur(15px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    color: #fff;
+    width: 95%;
+    transition: 0.3s;
+}
+
+.request-card:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.6);
+}
+
+/* Card content */
+.request-card p {
+    margin: 8px 0;
+    font-size: 16px;
+}
+
+/* Approve/Reject links as buttons */
+.request-actions {
+    margin-top: 15px;
+    display: flex;
+    gap: 15px;
+}
+
+.request-actions a {
+    text-decoration: none;
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 25px;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.request-actions a.approve {
+    background: #27ae60;
+    color: #fff;
+}
+
+.request-actions a.approve:hover {
+    background: #2ecc71;
+}
+
+.request-actions a.reject {
+    background: #c0392b;
+    color: #fff;
+}
+
+.request-actions a.reject:hover {
+    background: #e74c3c;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .request-card {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .swipe-container h2 {
+        font-size: 24px;
+    }
+    .request-card p {
+        font-size: 14px;
+    }
+    .request-actions a {
+        padding: 8px 15px;
+        font-size: 14px;
+    }
+}
+</style>
+
+<div class="container">
+
+    <h2>📋 Swipe Requests</h2>
+
+    {% for app in applications %}
+    <div class="request-card">
+        <p><strong>App ID:</strong> {{ app.id }}</p>
+        <p><strong>User:</strong> {{ app.user.username }}</p>
+        <p><strong>Category:</strong> {{ app.get_category_display }}</p>
+        <p><strong>Date:</strong> {{ app.request_date }}</p>
+        <p><strong>Reason:</strong> {{ app.reason }}</p>
+
+        <div class="request-actions">
+            <a href="{% url 'approve_request' app.id %}" class="approve">Approve</a>
+            <a href="{% url 'reject_request' app.id %}" class="reject">Reject</a>
+        </div>
+    </div>
+    {% empty %}
+    <p style="text-align:center; color:#fff; font-size:18px;">No pending requests</p>
+    {% endfor %}
+
+</div>
+
+{% endblock %}

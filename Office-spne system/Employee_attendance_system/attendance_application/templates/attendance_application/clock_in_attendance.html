@@ -1,0 +1,357 @@
+{% extends "authentication/root.html" %}
+{% load static %}
+
+{% block title %} Clock In {% endblock title %}
+
+{% block head %}
+<style>
+
+
+/* ===== CONTAINER ===== */
+.container {
+    display: flex;
+    justify-content: center;
+    padding: 50px 10px 50px 10px;
+}
+
+/* ===== MAIN BOX (DESKTOP LARGE) ===== */
+.main-content {
+    width: 100%;
+    max-width: 1050px;
+    padding: 35px;
+    background: rgba(20, 30, 40, 0.95);
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 25px 70px rgba(0,0,0,0.7);
+}
+
+/* ===== HEADINGS ===== */
+h2 {
+    font-size: 26px;
+    margin-bottom: 5px;
+}
+
+h3 {
+    font-size: 18px;
+    margin-bottom: 20px;
+    color: #ccc;
+}
+
+/* ===== FLEX SECTION ===== */
+.clockout-section {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+/* ===== CAMERA ===== */
+.user-photo video,
+.user-photo img {
+    width: 160px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+/* CAPTURE BUTTON */
+.capture-btn button {
+    margin-top: 10px;
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #ff9966, #ff5e62);
+    color: white;
+    cursor: pointer;
+}
+
+/* ===== REMARK ===== */
+.remark-box {
+    flex: 1;
+}
+
+textarea {
+    width: 100%;
+    height: 130px;
+    resize: none;
+    padding: 12px;
+    font-size: 15px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+}
+
+small {
+    color: #bbb;
+}
+
+/* ===== LOCATION ===== */
+.location {
+    margin-top: 20px;
+}
+
+.location p {
+    background: rgba(255,255,255,0.05);
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 14px;
+}
+
+/* ===== SELECT ===== */
+.select-fence {
+    margin-top: 20px;
+}
+
+.select-fence select {
+    width: 100%;
+    padding: 12px;
+    font-size: 15px;
+    border-radius: 10px;
+    border: none;
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+}
+
+.select-fence select option {
+    background: #1e2a36;   /* dark background */
+    color: #fff;           /* white text */
+}
+
+/* ===== BUTTON ===== */
+.clockout-btn {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.clockout-btn button {
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    color: white;
+
+    width: 220px;
+    padding: 20px;
+    font-size: 18px;
+    border: none;
+    border-radius: 50px;
+
+    cursor: pointer;
+
+    box-shadow: 0 0 20px rgba(0,198,255,0.6);
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 600px) {
+
+    .container {
+        padding: 90px 10px 80px;
+    }
+
+    .main-content {
+        padding: 16px;
+        max-width: 100%;
+    }
+
+    h2 {
+        font-size: 20px;
+    }
+
+    h3 {
+        font-size: 16px;
+    }
+
+    .clockout-section {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .user-photo video,
+    .user-photo img {
+        width: 120px;
+        height: 150px;
+    }
+
+    textarea {
+        height: 90px;
+        font-size: 13px;
+    }
+
+    .clockout-btn button {
+        width: 100%;
+        font-size: 14px;
+        padding: 14px;
+    }
+}
+
+</style>
+{% endblock head %}
+
+{% block body %}
+
+<div class="container">
+    <div class="main-content">
+
+        <h2>Attendance</h2>
+        <h3>Clock In</h3>
+
+        <div class="clockout-section">
+
+            <!-- CAMERA -->
+            <div class="user-photo">
+                <video id="video" autoplay></video>
+                <img id="snapshot" style="display:none;" />
+
+                <div class="capture-btn">
+                    <button onclick="takePhoto()">📸 Capture Photo</button>
+                </div>
+            </div>
+
+            <!-- REMARK -->
+            <div class="remark-box">
+                <textarea id="remark" maxlength="100" placeholder="Remark for Clock In"></textarea>
+                <small id="charCount">100 characters left</small>
+            </div>
+
+        </div>
+
+        <!-- LOCATION -->
+        <div class="location">
+            <h4>Location 📍</h4>
+            <p id="location">Fetching location...</p>
+        </div>
+
+        <!-- SELECT -->
+        <div class="select-fence">
+            <label>Select fence</label>
+            <select id="fence">
+                <option value="">--Select--</option>
+                <option value="main">Main Gate</option>
+                <option value="back">Back Gate</option>
+            </select>
+        </div>
+
+        <!-- BUTTON -->
+        <div class="clockout-btn">
+            <button onclick="clockIn()">CLOCK IN <span id="time"></span></button>
+        </div>
+
+    </div>
+</div>
+
+<script>
+
+/* ===== TIME ===== */
+function updateTime() {
+    const now = new Date();
+    document.getElementById("time").textContent = now.toLocaleTimeString();
+}
+setInterval(updateTime, 1000);
+updateTime();
+
+/* ===== CHARACTER COUNT ===== */
+document.getElementById("remark").addEventListener("input", function () {
+    const remaining = 100 - this.value.length;
+    document.getElementById("charCount").textContent = `${remaining} characters left`;
+});
+
+/* ===== CAMERA ===== */
+const video = document.getElementById("video");
+const snapshot = document.getElementById("snapshot");
+let imageData = "";
+
+navigator.mediaDevices.getUserMedia({ video: true })
+    .then(stream => video.srcObject = stream)
+    .catch(() => alert("Camera access denied"));
+
+function takePhoto() {
+    const canvas = document.createElement("canvas");
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(video, 0, 0);
+
+    imageData = canvas.toDataURL("image/png");
+
+    snapshot.src = imageData;
+    snapshot.style.display = "block";
+    video.style.display = "none";
+}
+
+/* ===== LOCATION ===== */
+let currentLocation = "";
+let lat = 0;
+let lon = 0;
+
+function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(async (pos) => {
+
+            lat = pos.coords.latitude;
+            lon = pos.coords.longitude;
+
+            currentLocation = `Latitude: ${lat.toFixed(5)}, Longitude: ${lon.toFixed(5)}`;
+            document.getElementById("location").textContent = currentLocation;
+
+            try {
+                const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`);
+                const data = await res.json();
+
+                if (data.display_name) {
+                    document.getElementById("location").textContent += `\n${data.display_name}`;
+                    currentLocation += ` | ${data.display_name}`;
+                }
+
+            } catch (e) {}
+
+        }, () => {
+            document.getElementById("location").textContent = "Location permission denied";
+        });
+    }
+}
+getLocation();
+
+/* ===== SUBMIT ===== */
+function clockIn() {
+
+    const remark = document.getElementById("remark").value.trim();
+    const fence = document.getElementById("fence").value;
+
+    if (!fence) {
+        alert("Please select a fence");
+        return;
+    }
+
+    fetch("{% url 'clock_in_attendance' %}", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}"
+        },
+        body: JSON.stringify({
+            remark,
+            location: currentLocation,
+            latitude: lat,
+            longitude: lon,
+            fence,
+            photo: imageData
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === 'list_attendance') {
+            window.location.href = "{% url 'list_attendance' %}";
+        } else if (data.error) {
+            alert(data.error);
+        }
+    })
+    .catch(() => alert("Submission failed"));
+
+}
+
+</script>
+
+{% endblock body %}

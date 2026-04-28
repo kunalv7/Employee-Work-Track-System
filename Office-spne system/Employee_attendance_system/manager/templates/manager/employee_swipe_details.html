@@ -1,0 +1,252 @@
+{% extends "manager/root.html" %}
+
+{% block body %}
+
+<style>
+/* ===== HEADER ===== */
+h2 {
+    color: #ffdd57;
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* ===== CARD HEADER ===== */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    flex-wrap: nowrap; /* 🔥 IMPORTANT */
+}
+
+/* prevent text wrapping */
+.card-header h3 {
+    color: #00c6ff;
+    margin: 0;
+    font-size: 18px;
+    white-space: nowrap;
+}
+
+/* ===== BACK BUTTON ===== */
+.back-btn {
+    padding: 8px 16px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #6c757d, #495057);
+    color: #fff;
+    text-decoration: none;
+    font-size: 20px;
+    transition: 0.3s;
+    white-space: nowrap; /* 🔥 IMPORTANT */
+}
+
+.back-btn:hover {
+    transform: translateY(-2px) scale(1.05);
+}
+
+/* ===== SUMMARY ===== */
+.summary {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 25px;
+}
+
+.box {
+    min-width: 160px;
+    padding: 14px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.08);
+    text-align: center;
+    font-size: 15px;
+}
+
+/* ===== MAIN CARD ===== */
+.card {
+    width: 100%;
+    padding: 20px;
+    border-radius: 15px;
+    background: rgba(255,255,255,0.08);
+}
+
+/* ===== TABLE ===== */
+.desktop-table {
+    display: block;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+
+th {
+    background: rgba(0,0,0,0.4);
+}
+
+/* ===== STATUS ===== */
+.approved { color: #00ff9d; font-weight: bold; }
+.rejected { color: #ff4d4d; font-weight: bold; }
+.pending { color: orange; font-weight: bold; }
+
+/* ===== MOBILE CARDS ===== */
+.mobile-cards {
+    display: none;
+}
+
+.swipe-card {
+    background: rgba(255,255,255,0.10);
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 12px;
+    font-size: 14px;
+    width: 100%;
+}
+
+.swipe-card div {
+    margin-bottom: 6px;
+}
+
+/* ===== EMPTY ===== */
+.empty {
+    text-align: center;
+    padding: 20px;
+    color: #ccc;
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 768px) {
+
+    .desktop-table {
+        display: none;
+    }
+
+    .mobile-cards {
+        display: block;
+    }
+
+    h2 {
+        font-size: 20px;
+    }
+
+    .summary {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .box {
+        width: 90%;
+    }
+
+    /* 🔥 KEEP SAME LINE ON MOBILE */
+    .card-header {
+        flex-direction: row;
+    }
+
+    .card-header h3 {
+        font-size: 16px;
+    }
+
+    .back-btn {
+        font-size: 11px;
+        padding: 5px 12px;
+    }
+}
+
+/* ===== TABLET ===== */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .container {
+        width: 95%;
+    }
+}
+
+/* ===== LARGE DESKTOP ===== */
+@media (min-width: 1400px) {
+    .container {
+        max-width: 1600px;
+    }
+}
+
+</style>
+
+<div class="container">
+
+    <h2>👤 {{ employee.username }} - Swipe Details</h2>
+
+    <!-- SUMMARY -->
+    <div class="summary">
+        <div class="box">✔ Approved: {{ approved_swipe }}</div>
+        <div class="box">❌ Rejected: {{ rejected_swipe }}</div>
+        <div class="box">⏳ Pending: {{ pending_swipe }}</div>
+    </div>
+
+    <!-- MAIN CARD -->
+    <div class="card">
+
+        <!-- HEADER -->
+        <div class="card-header">
+            <h3>📥 Swipe Requests</h3>
+            <a href="{% url 'employee_list' %}" class="back-btn">Back</a>
+        </div>
+
+        <!-- DESKTOP TABLE -->
+        <div class="desktop-table">
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Category</th>
+                    <th>Date</th>
+                    <th>In Time</th>
+                    <th>Out Time</th>
+                    <th>Reason</th>
+                    <th>Status</th>
+                </tr>
+
+                {% for s in swipes %}
+                <tr>
+                    <td>{{ s.id }}</td>
+                    <td>{{ s.category }}</td>
+                    <td>{{ s.request_date }}</td>
+                    <td>{{ s.in_time|default:"--" }}</td>
+                    <td>{{ s.out_time|default:"--" }}</td>
+                    <td>{{ s.reason }}</td>
+                    <td class="{{ s.status|lower }}">{{ s.status }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="empty">No Swipe Data Found</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <!-- MOBILE CARDS -->
+        <div class="mobile-cards">
+            {% for s in swipes %}
+            <div class="swipe-card">
+                <div><strong>ID:</strong> {{ s.id }}</div>
+                <div><strong>Category:</strong> {{ s.category }}</div>
+                <div><strong>Date:</strong> {{ s.request_date }}</div>
+                <div><strong>In Time:</strong> {{ s.in_time|default:"--" }}</div>
+                <div><strong>Out Time:</strong> {{ s.out_time|default:"--" }}</div>
+                <div><strong>Reason:</strong> {{ s.reason }}</div>
+                <div class="{{ s.status|lower }}">
+                    <strong>Status:</strong> {{ s.status }}
+                </div>
+            </div>
+            {% empty %}
+            <div class="empty">No Swipe Data Found</div>
+            {% endfor %}
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

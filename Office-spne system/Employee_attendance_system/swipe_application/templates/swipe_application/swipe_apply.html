@@ -1,0 +1,241 @@
+{% extends "authentication/root.html" %}
+{% load static %}
+
+{% block title %} Swipe Apply {% endblock title %}
+
+{% block head %}
+<style>
+
+
+/* ===== CONTAINER ===== */
+.container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 50px 10px 50px 10px;
+}
+
+/* ===== CARD (DESKTOP FIX) ===== */
+.content {
+    width: 100%;
+    max-width: 950px;
+    padding: 30px;
+
+    backdrop-filter: blur(18px);
+    background: rgba(255,255,255,0.08);
+    border-radius: 22px;
+    border: 1px solid rgba(255,255,255,0.1);
+
+    box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+}
+
+/* ===== HEADER ===== */
+.main-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.main-content h1 {
+    font-size: 24px;
+    color: #fff;
+    font-weight: 600;
+}
+
+/* BACK BUTTON */
+.back-btn {
+    padding: 9px 18px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-size: 13px;
+
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    color: white;
+
+    transition: 0.3s;
+}
+
+.back-btn:hover {
+    transform: scale(1.05);
+}
+
+/* ===== FORM RESET (🔥 IMPORTANT FIX) ===== */
+form p {
+    margin-bottom: 15px;
+}
+
+/* LABEL */
+label {
+    font-weight: 500;
+    margin-bottom: 5px;
+    display: block;
+    color: #ddd;
+}
+
+/* INPUT + TEXTAREA + SELECT */
+input, textarea, select {
+    width: 100%;
+    padding: 13px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.2);
+    font-size: 14px;
+
+    background: rgba(255,255,255,0.05);
+    color: #fff;
+
+    transition: 0.3s;
+}
+
+/* FOCUS */
+input:focus, textarea:focus, select:focus {
+    border-color: #00c6ff;
+    box-shadow: 0 0 12px rgba(0,198,255,0.5);
+    outline: none;
+}
+
+/* ===== SELECT CUSTOM ===== */
+select {
+    appearance: none;
+    cursor: pointer;
+
+    background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+}
+
+select option {
+    background: #1e2a30;
+    color: #fff;
+}
+
+/* ===== BUTTONS ===== */
+.form-buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.form-buttons button {
+    flex: 1;
+    padding: 14px;
+    border-radius: 30px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+/* SUBMIT */
+.form-buttons button[type="submit"] {
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    color: white;
+}
+
+.form-buttons button[type="submit"]:hover {
+    transform: translateY(-3px);
+}
+
+/* RESET */
+.form-buttons button[type="reset"] {
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+}
+
+/* ===== DESKTOP ENHANCEMENT ===== */
+@media (min-width: 768px) {
+
+    .content {
+        padding: 40px;
+    }
+
+    .form-buttons {
+        max-width: 400px;
+        margin-left: auto;
+    }
+
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 480px) {
+
+    .main-content h1 {
+        font-size: 18px;
+    }
+
+    input, select, textarea {
+        font-size: 15px;
+    }
+
+    .form-buttons {
+        flex-direction: column;
+    }
+
+}
+
+</style>
+{% endblock head %}
+
+{% block body %}
+
+<div class="container">
+    <div class="content">
+
+        <div class="main-content">
+            <h1>Swipe Apply</h1>
+            <a href="{% url 'swipe_home' %}" class="back-btn">Back</a>
+        </div>
+
+        <!-- FORM -->
+        <form method="POST">
+            {% csrf_token %}
+
+            {{ form.non_field_errors }}
+
+            <!-- CATEGORY -->
+            <div class="form-group">
+                <label>{{ form.category.label }}</label>
+                {{ form.category }}
+                {{ form.category.errors }}
+            </div>
+
+            <!-- REQUEST DATE -->
+            <div class="form-group">
+                <label>{{ form.request_date.label }}</label>
+                {{ form.request_date }}
+                {{ form.request_date.errors }}
+            </div>
+
+            <!-- ROW (IN + OUT TIME) -->
+            <div class="row">
+                <div class="form-group">
+                    <label>{{ form.in_time.label }}</label>
+                    {{ form.in_time }}
+                    {{ form.in_time.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label>{{ form.out_time.label }}</label>
+                    {{ form.out_time }}
+                    {{ form.out_time.errors }}
+                </div>
+            </div>
+
+            <!-- REASON -->
+            <div class="form-group">
+                <label>{{ form.reason.label }}</label>
+                {{ form.reason }}
+                {{ form.reason.errors }}
+            </div>
+
+            <!-- BUTTONS -->
+            <div class="form-buttons">
+                <button type="submit">Save</button>
+                <button type="reset">Cancel</button>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,353 @@
+{% extends "authentication/root.html" %}
+{% load static %}
+
+{% block title %} Leave Apply {% endblock title %}
+
+{% block head %}
+
+<!-- Flatpickr CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/style.css">
+
+<style>
+
+/* ===== BODY ===== */
+body {
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+}
+
+/* ===== CONTAINER ===== */
+.container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 60px 10px;
+}
+
+/* ===== CARD ===== */
+.content {
+    width: 100%;
+    max-width: 950px;
+    padding: 30px;
+
+    backdrop-filter: blur(18px);
+    background: rgba(255,255,255,0.08);
+    border-radius: 22px;
+    border: 1px solid rgba(255,255,255,0.1);
+
+    box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+}
+
+/* ===== HEADER ===== */
+.main-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.main-content h1 {
+    font-size: 24px;
+    color: #fff;
+    font-weight: 600;
+}
+
+/* BACK BUTTON */
+.back-btn {
+    padding: 9px 18px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-size: 13px;
+
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    color: white;
+
+    transition: 0.3s;
+}
+
+.back-btn:hover {
+    transform: scale(1.05);
+}
+
+/* ===== FORM ===== */
+label {
+    font-weight: 500;
+    margin-bottom: 5px;
+    display: block;
+    color: #ddd;
+}
+
+.required {
+    color: #ff6b6b;
+}
+
+/* INPUT */
+input, textarea, select {
+    width: 100%;
+    padding: 13px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.2);
+    font-size: 14px;
+
+    background: rgba(255,255,255,0.05);
+    color: #fff;
+
+    transition: 0.3s;
+}
+
+/* FOCUS */
+input:focus, textarea:focus, select:focus {
+    border-color: #00c6ff;
+    box-shadow: 0 0 12px rgba(0,198,255,0.5);
+    outline: none;
+}
+
+/* SELECT */
+select {
+    appearance: none;
+    cursor: pointer;
+
+    background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+}
+
+select option {
+    background: #1e2a30;
+    color: #fff;
+}
+
+/* FORM GROUP */
+.form-group {
+    margin-bottom: 18px;
+}
+
+/* ROW */
+.row {
+    display: flex;
+    gap: 20px;
+}
+
+.row .form-group {
+    flex: 1;
+}
+
+/* NOTE */
+.note {
+    font-size: 14px;
+    color: #ccc;
+    margin: 15px 0;
+}
+
+/* ERRORS */
+.errorlist {
+    list-style: none;
+    padding: 0;
+    margin-top: 5px;
+    color: #ff6b6b;
+    font-size: 13px;
+}
+
+/* BUTTONS */
+.buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+button {
+    flex: 1;
+    padding: 14px;
+    border-radius: 30px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button.apply {
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    color: white;
+}
+
+button.apply:hover {
+    transform: translateY(-3px);
+}
+
+button.reset {
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+}
+
+/* ===== DESKTOP ===== */
+@media (min-width: 768px) {
+    .content {
+        padding: 40px;
+    }
+
+    .buttons {
+        max-width: 400px;
+        margin-left: auto;
+    }
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 768px) {
+
+    .container {
+        padding: 80px 15px;
+    }
+
+    .row {
+        flex-direction: column;
+    }
+
+    .main-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .main-content h1 {
+        font-size: 18px;
+    }
+
+    input, select, textarea {
+        font-size: 15px;
+    }
+
+    .buttons {
+        flex-direction: column;
+    }
+}
+
+</style>
+
+{% endblock head %}
+
+
+{% block body %}
+
+<div class="container">
+    <div class="content">
+
+        <div class="main-content">
+            <h1>Leave Apply</h1>
+            <a href="{% url 'leave_home' %}" class="back-btn">Back</a>
+        </div>
+
+        <form method="post" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+
+            {{ form.non_field_errors }}
+            
+            <div class="note">Note: Apply Leave for Period</div>
+
+            <div class="form-group">
+                <label>{{ form.period.label }}<span class="required">*</span></label>
+                {{ form.period }}
+                {{ form.period.errors }}
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <label>{{ form.from_date.label }}<span class="required">*</span></label>
+                    {{ form.from_date }}
+                    {{ form.from_date.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label>{{ form.to_date.label }}<span class="required">*</span></label>
+                    {{ form.to_date }}
+                    {{ form.to_date.errors }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <label>{{ form.start_day.label }}<span class="required">*</span></label>
+                    {{ form.start_day }}
+                    {{ form.start_day.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label>{{ form.end_day.label }}<span class="required">*</span></label>
+                    {{ form.end_day }}
+                    {{ form.end_day.errors }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <label>{{ form.half_start.label }}<span class="required">*</span></label>
+                    {{ form.half_start }}
+                    {{ form.half_start.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label>{{ form.half_end.label }}<span class="required">*</span></label>
+                    {{ form.half_end }}
+                    {{ form.half_end.errors }}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>{{ form.leave_type.label }}<span class="required">*</span></label>
+                {{ form.leave_type }}
+                {{ form.leave_type.errors }}
+            </div>
+
+            <div class="form-group">
+                <label>{{ form.total_days.label }}<span class="required">*</span></label>
+                {{ form.total_days }}
+                {{ form.total_days.errors }}
+            </div>
+
+            <div class="form-group">
+                <label>{{ form.reason.label }}<span class="required">*</span></label>
+                {{ form.reason }}
+                {{ form.reason.errors }}
+            </div>
+
+            <div class="form-group">
+                <label>{{ form.document.label }}</label>
+                {{ form.document }}
+                {{ form.document.errors }}
+            </div>
+
+            <div class="buttons">
+                <button type="submit" class="apply">Apply</button>
+                <button type="reset" class="reset">Reset</button>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+<!-- Flatpickr -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/index.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+
+    flatpickr("#id_from_date", { dateFormat: "Y-m-d" });
+    flatpickr("#id_to_date", { dateFormat: "Y-m-d" });
+
+    if(document.querySelector("#id_period")){
+        flatpickr("#id_period", {
+            plugins: [new monthSelectPlugin({
+                shorthand: true,
+                dateFormat: "F Y",
+                altFormat: "F Y"
+            })]
+        });
+    }
+
+});
+</script>
+
+{% endblock body %}

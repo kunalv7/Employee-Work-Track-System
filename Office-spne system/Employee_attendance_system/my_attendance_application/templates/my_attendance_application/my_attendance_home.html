@@ -1,0 +1,381 @@
+{% extends "authentication/root.html" %}
+{% load static %}
+
+{% block title %} My Attendance {% endblock title %}
+
+{% block head %}
+<style>
+
+/* =================== MAIN =================== */
+.main-content {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+/* =================== CARD =================== */
+.attendance-card {
+  width: 100%;
+  max-width: 1200px;
+  border: 1px solid #ddd;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  /* background: #fff; */
+}
+
+/* =================== HEADER =================== */
+
+.attendance-header {
+  display: flex;
+  justify-content: center; 
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.attendance-header h2 {
+  color: white;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+/* =================== BUTTONS =================== */
+.back-btn {
+  padding: 6px 18px;
+  border-radius: 6px;
+  border: 1px solid #1c5d8a;
+  background: white;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.back-btn:hover {
+  background: #1c5d8a;
+  color: white;
+}
+
+.submit-btn,
+.refresh-btn {
+  padding: 6px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.submit-btn {
+  background: #1c5d8a;
+  color: white;
+}
+.submit-btn:hover {
+  background: #144263;
+}
+
+.refresh-btn {
+  background: #777;
+  color: white;
+}
+.refresh-btn:hover {
+  background: #555;
+}
+
+/* =================== FILTERS =================== */
+.filters {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+}
+
+.filters select {
+  padding: 6px 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+/* =================== STATUS DOTS =================== */
+.status {
+  margin: 15px 0;
+  font-size: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.red-dot {
+  height: 10px;
+  width: 10px;
+  background: red;
+  display: inline-block;
+  border-radius: 50%;
+  margin-right: 4px;
+}
+
+  .mobile-total {
+    background: gray;
+    padding: 12px;
+    border-radius: 10px;
+    margin-top: 10px;
+    font-weight: bold;
+    color: #fff;
+  }
+
+/* =================== TABLE =================== */
+.attendance-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.attendance-table th,
+.attendance-table td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: center;
+  /* background-color: rgba(189, 183, 107, 0.164); */
+}
+
+.attendance-table thead {
+  background: rgba(109, 109, 252, 0.748);
+  font-weight: bold;
+}
+
+.attendance-table tfoot {
+  background: gray;
+  font-weight: bold;
+}
+
+/* DESKTOP TABLE SPECIFIC */
+.attendance-table td {
+  vertical-align: middle;
+}
+
+.attendance-table td span.red-dot {
+  margin-right: 6px;
+}
+
+/* =================== MOBILE =================== */
+@media (max-width: 768px) {
+
+  /* Hide desktop header */
+  .attendance-table thead {
+    display: none;
+  }
+
+  /* Table becomes card style */
+  .attendance-table,
+  .attendance-table tbody,
+  .attendance-table tr,
+  .attendance-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .attendance-table tr {
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 10px;
+  }
+
+  .attendance-table td {
+    text-align: left;
+    padding: 6px 10px;
+    border: none;
+    position: relative;
+    padding-left: 50%;
+    font-size: 13px;
+  }
+
+  .attendance-table td::before {
+    position: absolute;
+    left: 10px;
+    top: 6px;
+    font-weight: bold;
+  }
+
+  .attendance-table td:nth-of-type(1)::before { content: "Date"; }
+  .attendance-table td:nth-of-type(2)::before { content: "IN Time"; }
+  .attendance-table td:nth-of-type(3)::before { content: "OUT Time"; }
+  .attendance-table td:nth-of-type(4)::before { content: "DA Type"; }
+  .attendance-table td:nth-of-type(5)::before { content: "Portion"; }
+  .attendance-table td:nth-of-type(6)::before { content: "Hours"; }
+  .attendance-table td:nth-of-type(7)::before { content: "Late"; }
+
+  /* Hide footer on mobile */
+  .attendance-table tfoot {
+    display: none;
+  }
+
+  /* Mobile total summary card */
+  .mobile-total {
+    background: gray;
+    padding: 12px;
+    border-radius: 10px;
+    margin-top: 10px;
+    font-weight: bold;
+    color: #fff;
+  }
+
+  .mobile-total div {
+    margin-bottom: 5px;
+  }
+}
+
+</style>
+{% endblock %}
+
+{% block body %}
+
+<div class="container">
+  <div class="main-content">
+
+    <div class="attendance-card">
+
+      <div class="attendance-header">
+        <h2>My Attendance</h2>
+      </div>
+
+      <form method="get">
+        <div class="filters">
+        <select name="month">
+          <option value="1" {% if selected_month == "1" %}selected{% endif %}>January</option>
+          <option value="2" {% if selected_month == "2" %}selected{% endif %}>February</option>
+          <option value="3" {% if selected_month == "3" %}selected{% endif %}>March</option>
+          <option value="4" {% if selected_month == "4" %}selected{% endif %}>April</option>
+          <option value="5" {% if selected_month == "5" %}selected{% endif %}>May</option>
+          <option value="6" {% if selected_month == "6" %}selected{% endif %}>June</option>
+          <option value="7" {% if selected_month == "7" %}selected{% endif %}>July</option>
+          <option value="8" {% if selected_month == "8" %}selected{% endif %}>August</option>
+          <option value="9" {% if selected_month == "9" %}selected{% endif %}>September</option>
+          <option value="10" {% if selected_month == "10" %}selected{% endif %}>October</option>
+          <option value="11" {% if selected_month == "11" %}selected{% endif %}>November</option>
+          <option value="12" {% if selected_month == "12" %}selected{% endif %}>December</option>
+        </select>
+
+        <select name="year">
+          <option value="2026" {% if selected_year == "2026" %}selected{% endif %}>2026</option>
+          <option value="2025" {% if selected_year == "2025" %}selected{% endif %}>2025</option>
+          <option value="2024" {% if selected_year == "2024" %}selected{% endif %}>2024</option>
+          <option value="2023" {% if selected_year == "2023" %}selected{% endif %}>2023</option>
+        </select>
+
+          <button type="submit" class="submit-btn">Submit</button>
+          <!-- <button type="button" class="refresh-btn" onclick="location.href=location.pathname">Refresh</button> -->
+          <button type="button" class="refresh-btn"onclick="window.location.href='?'">Refresh</button>
+
+          <a href="{% url 'home' %}"><button  type="button" class="back-btn">Back</button></a>
+          
+        </div>
+
+        <label>
+          <input type="checkbox" name="archive" value="1"
+          {% if request.GET.archive %}checked{% endif %}>
+          Get Report From Archive Data
+        </label>
+      </form>
+
+      <div class="status">
+        <span><span class="red-dot"></span> DP</span>
+        <span><span class="red-dot"></span> DA</span>
+        <span><span class="red-dot"></span> SR</span>
+        <span><span class="red-dot"></span> WO</span>
+        <span><span class="red-dot"></span> PH</span>
+      </div>
+
+      <table class="attendance-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>IN Time</th>
+            <th>OUT Time</th>
+            <th>DA Type</th>
+            <th>Portion</th>
+            <th>Total Hours</th>
+            <th>Late</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% if records %}
+            {% for item in records|dictsort:"date" %}
+              <tr>
+                <td>{{ item.date|date:"d-M-Y (D)" }}</td>
+                <td>
+                  {% if item.clock_in %}
+                    <span class="red-dot"></span>
+                    {% if item.is_swipe_in %}
+                      {{ item.clock_in.in_time|time:"h:i A" }}
+                    {% else %}
+                      {{ item.clock_in.timestamp|time:"h:i A" }}
+                    {% endif %}
+                  {% else %}--{% endif %}
+                </td>
+                <td>
+                  {% if item.clock_out %}
+                    <span class="red-dot"></span>
+                    {% if item.is_swipe_out %}
+                      {{ item.clock_out.out_time|time:"h:i A" }}
+                    {% else %}
+                      {{ item.clock_out.timestamp|time:"h:i A" }}
+                    {% endif %}
+                  {% else %}--{% endif %}
+                </td>
+                <td>
+                  {% if item.status == "DP" %}
+                    <span style="color:green;font-weight:bold;">DP</span>
+                  {% elif item.status == "HD" %}
+                    <span style="color:orange;font-weight:bold;">HD</span>
+                  {% elif item.status == "DA" %}
+                    <span style="color:blue;font-weight:bold;">DA</span>
+                  {% elif item.status == "WO" %}
+                    <span style="color: orchid;font-weight:bold">WO</span>
+                  {% elif item.status == "PH" %}
+                    <span style="color:purple;font-weight:bold">PH</span>
+                  {% elif item.status == "LV" %}
+                    <span style="color:brown;font-weight:bold;">Leave Applied</span>
+                  {% elif item.status == "SR" %}
+                    <span style="color:red;font-weight:bold;">SR</span>
+                  {% else %}
+                    {{ item.status }}
+                  {% endif %}
+                </td>
+                <td>1.00</td>
+                <td>{{ item.total_hours }}</td>
+                <td>
+                  {% if item.late == "1" %}
+                    <span style="color:red;font-weight:bold;">Late</span>
+                  {% else %}--{% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          {% else %}
+            <tr>
+              <td colspan="7">🚫 No attendance data found</td>
+            </tr>
+          {% endif %}
+        </tbody>
+
+        <tfoot>
+          <tr>
+            <td colspan="4"></td>
+            <td>{{ total_portion }}</td>
+            <td>{{ total_hours_sum }}</td>
+            <td>{{ total_late }}</td>
+          </tr>
+        </tfoot>
+      </table>
+
+      <!-- MOBILE TOTAL -->
+      <div class="mobile-total">
+        <div>Total Portion: {{ total_portion }}</div>
+        <div>Total Hours: {{ total_hours_sum }}</div>
+        <div>Total Late: {{ total_late }}</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}
