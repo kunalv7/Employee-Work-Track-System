@@ -2,18 +2,23 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    # Home
-    path('expense_home/', views.expense_home, name='expense_home'),
 
-    # Add Expense Form
-    path('add_expense/', views.add_expense, name='add_expense'),
+    # HOME
+    path('', views.expense_home, name='expense_home'),
 
-    # Recent Expenses List (card UI page)
-    path('recent_expenses/', views.recent_expenses, name='recent_expenses'),
+    # ADD EXPENSE
+    path('add-expense/', views.add_expense, name='add_expense'),
 
-    # Add Voucher (optional page)
-    path('add_voucher/', views.add_voucher, name='add_voucher'),
+    # RECENT EXPENSES
+    path('recent-expenses/', views.recent_expenses, name='recent_expenses'),
 
-    # 🔥 (Optional but recommended) Expense Detail Page
+    # ADD VOUCHER (SEARCH + RESULT PAGE)
+    path('add-voucher/', views.add_voucher, name='add_voucher'),
+
+    # ALL EXPENSE LIST
+    path('expense-list/', views.expense_list, name='expense_list'),
+
+    # SINGLE EXPENSE DETAIL
     path('expense/<int:id>/', views.expense_detail, name='expense_detail'),
+
 ]

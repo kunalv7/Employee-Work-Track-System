@@ -1,101 +1,132 @@
 {% extends "authentication/root.html" %}
 {% load static %}
 
-
 {% block title %} Leave {% endblock title %}
-
 
 {% block head %}
 <style>
-    .main-content {
-        padding: 20px;
+
+/* MAIN */
+.main-content {
+    padding: 10px;
+}
+
+/* HEADING */
+.main-content h2 {
+    margin-bottom: 20px;
+    font-size: 20px;
+    color: #ffffff;
+}
+
+/* LINK RESET */
+.main-content a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* 🔥 GLASS CARD */
+.menu-item {
+    display: flex;
+    align-items: center;
+    padding: 14px 16px;
+    margin-bottom: 15px;
+    border-radius: 16px;
+
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    border: 1px solid rgba(255,255,255,0.15);
+
+    box-shadow: 
+        0 8px 20px rgba(0,0,0,0.4);
+
+    transition: all 0.3s ease;
+}
+
+/* HOVER */
+.menu-item:hover {
+    transform: translateY(-3px) scale(1.01);
+    background: rgba(255,255,255,0.1);
+}
+
+/* ICON */
+.menu-item i {
+    font-size: 18px;
+    margin-right: 12px;
+
+    background: linear-gradient(135deg, #f6d365, #fda085);
+    color: #222;
+
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+}
+
+/* TEXT */
+.menu-item span {
+    font-size: 14px;
+    font-weight: 500;
+    color: #ffffff;
+}
+
+/* MOBILE */
+@media (max-width: 480px) {
+
+    .main-content h2 {
+        font-size: 18px;
     }
 
-    .main-content a{
-        text-decoration: none;
-        color: black;
-    }
-
-    h2 {
-        font-size: 24px;
-        margin-bottom: 20px;
-    }
-
-    .card {
-        display: flex;
-        align-items: center;
+    .menu-item {
         padding: 12px;
-        border: 1px solid #ccc;
-        border-left: 8px solid #b8860b;
-        border-radius: 4px;
-        margin-bottom: 12px;
-        background-color: #f0f0f0;
-        cursor: pointer;
     }
 
-    .card-icon {
-        width: 40px;
-        height: 40px;
-        background-color: #b8860b;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        border-radius: 4px;
-        margin-right: 12px;
-        font-size: 20px;
+    .menu-item span {
+        font-size: 13px;
     }
+}
+
 </style>
 {% endblock head %}
-
 
 {% block body %}
 
 <div class="container">
     <div class="main-content">
-        <h2>Expense</h2>
 
-        <a href="{% url 'add_expense' %}" class="card-link">
-            <div class="card">
-                <div class="card-icon"><i class="fas fa-file-invoice-dollar"></i></div>
-                <span>Add Expense</span>
-            </div>
+        <h2>💰 Expense Dashboard</h2>
+
+        <a href="{% url 'add_expense' %}" class="menu-item">
+            <i class="fas fa-file-invoice-dollar"></i>
+            <span>Add Expense</span>
         </a>
 
-        <a href="{% url 'add_voucher' %}" class="card-link">
-            <div class="card">
-                <div class="card-icon"><i class="fas fa-plus-square"></i></div>
-                <span>Add Voucher</span>
-            </div>
+        <a href="{% url 'add_voucher' %}" class="menu-item">
+            <i class="fas fa-plus-square"></i>
+            <span>Add Voucher</span>
         </a>
 
-        <a href="{% url 'recent_expenses' %}" class="card-link">
-            <div class="card">
-                <div class="card-icon"><i class="fas fa-clock"></i></div>
-                <span>Recent Applications</span>
-            </div>
+        <a href="{% url 'recent_expenses' %}" class="menu-item">
+            <i class="fas fa-clock"></i>
+            <span>Recent Applications</span>
         </a>
 
-        <a href="#" class="card-link">
-            <div class="card">
-                <div class="card-icon"><i class="fas fa-check"></i></div>
-                <span>Approved Applications</span>
-            </div>
+        <a href="#" class="menu-item">
+            <i class="fas fa-check-circle"></i>
+            <span>Approved Applications</span>
         </a>
 
-        <a href="#" class="card-link">
-            <div class="card">
-                <div class="card-icon"><i class="fas fa-times"></i></div>
-                <span>Rejected Applications</span>
-            </div>
+        <a href="#" class="menu-item">
+            <i class="fas fa-times-circle"></i>
+            <span>Rejected Applications</span>
         </a>
 
-        <!-- <a href="#" class="card-link">
-            <div class="card">
-                <div class="card-icon"><i class="fas fa-hourglass-end"></i></div>
-                <span>Lapsed Applications</span>
-            </div>
-        </a> -->
     </div>
 </div>
 

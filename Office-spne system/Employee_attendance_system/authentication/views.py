@@ -132,3 +132,7 @@ def id_card(request):
     return render(request, "authentication/id_card.html", {
         "profile": profile
     })
+
+@login_required
+def corporate_guidelines(request):
+    return render(request, "authentication/corporate_guidelines.html")

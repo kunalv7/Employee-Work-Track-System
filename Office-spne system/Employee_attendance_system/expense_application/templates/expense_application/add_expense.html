@@ -142,7 +142,11 @@ select option{
     <div class="card">
 
         <h2>💼 Add Expense</h2>
-
+        {% if form.errors %}
+            <div style="color:red;">
+                {{ form.errors }}
+            </div>
+        {% endif %}
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
 

@@ -121,24 +121,8 @@ select option {
     font-size: 14px;
 }
 
-/* ===== TABLET ===== */
-@media (max-width: 768px) {
-    .voucher-card {
-        padding: 15px;
-    }
-}
-
 /* ===== MOBILE ===== */
 @media (max-width: 480px) {
-
-    .voucher-header h2 {
-        font-size: 16px;
-    }
-
-    .voucher-header p {
-        font-size: 11px;
-    }
-
     .form-row {
         flex-direction: column;
     }
@@ -146,20 +130,10 @@ select option {
     .form-buttons {
         flex-direction: column;
     }
-
-    .search-btn,
-    .reset-btn {
-        width: 100%;
-    }
 }
 
 </style>
 {% endblock head %}
-
-{% extends "authentication/root.html" %}
-{% load static %}
-
-{% block title %} Add Voucher {% endblock title %}
 
 {% block body %}
 <div class="container">
@@ -176,11 +150,10 @@ select option {
         <button class="back-btn" onclick="history.back()">&lt;&lt;</button>
     </div>
 
-    <!-- FORM -->
-    <form method="POST">
+    <!-- ✅ FORM START -->
+    <form method="POST" id="voucherForm">
         {% csrf_token %}
 
-        <!-- CLAIM TYPE -->
         <div class="form-group">
             <label>Claim Type</label>
             <select name="claim_type">
@@ -190,7 +163,6 @@ select option {
             </select>
         </div>
 
-        <!-- ROW -->
         <div class="form-row">
             <div class="form-group">
                 <label>Travel Type</label>
@@ -211,7 +183,6 @@ select option {
             </div>
         </div>
 
-        <!-- DATE -->
         <div class="form-row">
             <div class="form-group">
                 <label>From Date</label>
@@ -224,46 +195,83 @@ select option {
             </div>
         </div>
 
-        <!-- BUTTONS -->
         <div class="form-buttons">
             <button type="submit" class="search-btn">Search</button>
-            <button type="reset" class="reset-btn">Reset</button>
+
+            <!-- ✅ FIXED RESET -->
+            <button type="button" class="reset-btn" onclick="resetForm()">Reset</button>
         </div>
 
+        <!-- ================= RESULTS ================= -->
+        <hr>
+
+        <h3 style="margin-top:10px;">Results</h3>
+
+        <div style="overflow-x:auto;">
+        <table style="width:100%; margin-top:10px; border-collapse: collapse; font-size:13px;">
+
+            <tr style="background: rgba(255,255,255,0.2);">
+                <th style="padding:6px;">
+                    <input type="checkbox" id="selectAll">
+                </th>
+                <th style="padding:6px;">Date</th>
+                <th style="padding:6px;">City</th>
+                <th style="padding:6px;">Expense</th>
+                <th style="padding:6px;">Amount</th>
+            </tr>
+
+            {% for exp in expenses %}
+            <tr style="border-bottom:1px solid rgba(255,255,255,0.1); text-align:center;">
+                <td style="padding:6px;">
+                    <input type="checkbox" name="selected_expenses" value="{{ exp.id }}">
+                </td>
+                <td style="padding:6px;">{{ exp.date }}</td>
+                <td style="padding:6px;">{{ exp.city }}</td>
+                <td style="padding:6px;">{{ exp.expense }}</td>
+                <td style="padding:6px;">{{ exp.amount }}</td>
+            </tr>
+
+            {% empty %}
+            <tr>
+                <td colspan="5" style="padding:10px; text-align:center;">No data found</td>
+            </tr>
+            {% endfor %}
+
+        </table>
+        </div>
+
+        <!-- ✅ NEW SUBMIT SELECTED BUTTON -->
+        <button type="submit" class="search-btn" style="margin-top:10px;">
+            Submit Selected
+        </button>
+
     </form>
-
-    <!-- ================= RESULTS ================= -->
-    {% if expenses %}
-    <hr>
-
-    <h3 style="margin-top:10px;">Results</h3>
-
-    <div style="overflow-x:auto;">
-    <table style="width:100%; margin-top:10px; border-collapse: collapse; font-size:13px;">
-        <tr style="background: rgba(255,255,255,0.2);">
-            <th style="padding:6px;">Date</th>
-            <th style="padding:6px;">City</th>
-            <th style="padding:6px;">Expense</th>
-            <th style="padding:6px;">Amount</th>
-        </tr>
-
-        {% for exp in expenses %}
-        <tr style="border-bottom:1px solid rgba(255,255,255,0.1); text-align:center;">
-            <td style="padding:6px;">{{ exp.date }}</td>
-            <td style="padding:6px;">{{ exp.city }}</td>
-            <td style="padding:6px;">{{ exp.expense }}</td>
-            <td style="padding:6px;">{{ exp.amount }}</td>
-        </tr>
-        {% endfor %}
-    </table>
-    </div>
-
-    {% elif expenses is not None %}
-    <p style="text-align:center; margin-top:10px;">No data found</p>
-    {% endif %}
-    <!-- ================= END ================= -->
+    <!-- ✅ FORM END -->
 
 </div>
 </div>
 </div>
+
+<!-- ✅ SCRIPT -->
+<script>
+
+// Select All
+document.getElementById('selectAll').addEventListener('click', function () {
+    let checkboxes = document.querySelectorAll('input[name="selected_expenses"]');
+    checkboxes.forEach(cb => cb.checked = this.checked);
+});
+
+// ✅ RESET FIX
+function resetForm() {
+    document.getElementById("voucherForm").reset();
+
+    // Uncheck all checkboxes
+    let checkboxes = document.querySelectorAll('input[name="selected_expenses"]');
+    checkboxes.forEach(cb => cb.checked = false);
+
+    document.getElementById("selectAll").checked = false;
+}
+
+</script>
+
 {% endblock %}
