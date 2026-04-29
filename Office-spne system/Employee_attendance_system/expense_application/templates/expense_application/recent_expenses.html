@@ -2,7 +2,7 @@
 
 {% block head %}
 <style>
-/* CARD */
+/* SAME CSS — NO CHANGE */
 .expense-card{
     display:flex;
     margin-bottom:15px;
@@ -11,8 +11,6 @@
     background:#e8dcc7;
     box-shadow:0 2px 6px rgba(0,0,0,0.1);
 }
-
-/* LEFT DATE BOX */
 .date-box{
     background:#c59b5f;
     color:white;
@@ -20,70 +18,38 @@
     text-align:center;
     padding:10px 5px;
 }
-
 .day{
     font-size:22px;
     font-weight:bold;
-    line-height:1;
 }
-
 .month{
     font-size:12px;
-    margin-top:5px;
 }
-
-/* RIGHT DETAILS */
 .details{
     padding:10px 12px;
     font-size:13px;
     flex:1;
-    color:#333;
 }
-
-/* TOP LINE */
 .top-line{
     font-size:14px;
     margin-bottom:5px;
+    color: black;
 }
-
-.final{
+/* .final{
     color:green;
     font-weight:600;
-}
-
-/* TEXT ROWS */
-.text-row{
-    margin-bottom:3px;
-}
-
-/* NARRATION */
-.narration{
-    margin-top:4px;
-    color:#444;
-    line-height:1.4;
-}
-
-/* VIEW LINK */
+} */
 .view-link{
     margin-top:5px;
     display:inline-block;
     color:#007bff;
     font-size:13px;
-    cursor:pointer;
-    text-decoration:none;
 }
-
-.view-link:hover{
-    text-decoration:underline;
-}
-
-/* HEADER */
 h2{
     text-align:center;
     margin-bottom:20px;
-    color: white
+    color:white;
 }
-
 </style>
 {% endblock %}
 
@@ -94,41 +60,27 @@ h2{
 
 <h2>Recent Expenses</h2>
 
-{% for exp in expenses %}
+{% for m in monthly_data %}
 <div class="expense-card">
 
-    <!-- DATE -->
+    <!-- MONTH BOX -->
     <div class="date-box">
-        <div class="day">{{ exp.date|date:"d" }}</div>
-        <div class="month">{{ exp.date|date:"M y" }}</div>
+        <div class="day">{{ m.month|date:"M" }}</div>
+        <div class="month">{{ m.month|date:"Y" }}</div>
     </div>
 
     <!-- DETAILS -->
     <div class="details">
 
-        <!-- AMOUNT -->
         <div class="top-line">
-            Amount : {{ exp.amount }}
-            <span class="final">({{ exp.final_amount }})</span>
-        </div>
-
-        <!-- DATE RANGE -->
-        <div class="text-row">
-            {{ exp.date|date:"d-M-y" }} To {{ exp.date|date:"d-M-y" }}
-        </div>
-
-        <!-- PROJECT -->
-        <div class="text-row">
-            Project : {{ exp.project }}
-        </div>
-
-        <!-- NARRATION -->
-        <div class="narration">
-            Narration : {{ exp.remarks }}
+            Total Amount : {{ m.total_amount }}
+            <!-- <span class="final">({{ m.total_final }})</span> -->
         </div>
 
         <!-- VIEW -->
-        <a href="{% url 'expense_detail' exp.id %}" class="view-link">View</a>
+        <a href="{% url 'monthly_detail' m.month|date:'Y' m.month|date:'m' %}" class="view-link">
+            View
+        </a>
 
     </div>
 

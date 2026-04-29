@@ -38,7 +38,7 @@ class Expense(models.Model):
     currency = models.CharField(max_length=10, default="INR")
     conversion_rate = models.FloatField(default=1.0)
 
-    unit_value = models.FloatField()
+    # unit_value = models.FloatField()
     amount = models.FloatField()
     final_amount = models.FloatField()
 

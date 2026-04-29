@@ -12,7 +12,7 @@ class ExpenseForm(forms.ModelForm):
             'expense',
             'currency',
             'conversion_rate',
-            'unit_value',
+            # 'unit_value',
             'amount',
             'final_amount',
             'project',

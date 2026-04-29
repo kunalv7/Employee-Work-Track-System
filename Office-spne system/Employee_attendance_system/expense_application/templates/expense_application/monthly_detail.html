@@ -2,85 +2,57 @@
 
 {% block head %}
 <style>
-/* CARD */
+/* SAME CSS — NO CHANGE */
 .voucher-card{
     border-radius:6px;
     margin-bottom:20px;
     overflow:hidden;
     border:1px solid #ddd;
 }
-
-/* HEADER */
 .voucher-header{
     padding:10px;
     border-bottom:1px solid #ccc;
-    font-size:14px;
 }
-
-/* AMOUNT */
 .amount-box{
     padding:10px;
     border-bottom:1px solid #ccc;
     font-weight:bold;
 }
-
-.final{
+/* .final{
     color:green;
-}
-
-/* DATE ROW */
+} */
 .date-row{
     display:flex;
     border-bottom:1px solid #ccc;
 }
-
 .date-col{
     flex:1;
     padding:10px;
     border-right:1px solid #ccc;
-    font-size:13px;
 }
-
-.date-col:last-child{
-    border-right:none;
-}
-
-/* DETAILS */
 .details{
     padding:10px;
-    font-size:13px;
-    line-height:1.5;
 }
-
-/* TABLE */
 .table{
     width:100%;
     border-collapse:collapse;
     margin-top:10px;
 }
-
 .table th{
     background:#c59b5f;
     color:white;
     padding:8px;
-    font-size:12px;
 }
-
 .table td{
     padding:8px;
     border-top:1px solid #ddd;
-    font-size:12px;
     text-align:center;
 }
-
-/* TITLE */
 h2{
     text-align:center;
     margin-bottom:20px;
     color:white;
 }
-
-/* BACK BUTTON */
 .back-btn{
     display:block;
     text-align:center;
@@ -91,11 +63,6 @@ h2{
     text-decoration:none;
     border-radius:6px;
 }
-
-.back-btn:hover{
-    background:#0056b3;
-}
-
 </style>
 {% endblock %}
 
@@ -104,38 +71,19 @@ h2{
 
 <div class="container">
 
-<h2>💼 Expense Voucher</h2>
+<h2>💼 Monthly Expense Voucher</h2>
 
 <div class="voucher-card">
 
-    <!-- VOUCHER NO -->
+    <!-- HEADER -->
     <div class="voucher-header">
-        Voucher No. : {{ expense.id }}
+        Month : {{ month_name }}
     </div>
 
-    <!-- AMOUNT -->
+    <!-- TOTAL -->
     <div class="amount-box">
-        Amount : {{ expense.amount }}
-        <span class="final">({{ expense.final_amount }})</span>
-    </div>
-
-    <!-- DATE -->
-    <div class="date-row">
-        <div class="date-col">
-            From date : {{ expense.date|date:"d-M-y" }}
-        </div>
-        <div class="date-col">
-            To date : {{ expense.date|date:"d-M-y" }}
-        </div>
-    </div>
-
-    <!-- DETAILS -->
-    <div class="details">
-        <div>Claim Type : {{ expense.claim_type }}</div>
-        <div>Travel Type : {{ expense.travel_type }}</div>
-        <div>City : {{ expense.city }}</div>
-        <div>Project : {{ expense.project }}</div>
-        <div>Narration : {{ expense.remarks }}</div>
+        Total Amount : {{ total_amount }}
+        <!-- <span class="final">({{ total_final }})</span> -->
     </div>
 
     <!-- TABLE -->
@@ -145,14 +93,20 @@ h2{
             <th>Expense Name</th>
             <th>Claimed Amount</th>
             <th>Approved Amount</th>
+            <th>Project</th>
+            <th>City</th>
         </tr>
 
+        {% for exp in expenses %}
         <tr>
-            <td>{{ expense.date|date:"d-M-y" }}</td>
-            <td>{{ expense.expense }}</td>
-            <td>{{ expense.amount }}</td>
-            <td>{{ expense.final_amount }}</td>
+            <td>{{ exp.date|date:"d-M-y" }}</td>
+            <td>{{ exp.expense }}</td>
+            <td>{{ exp.amount }}</td>
+            <td>{{ exp.final_amount }}</td>
+            <td>{{ exp.project }}</td>
+            <td>{{ exp.city }}</td>
         </tr>
+        {% endfor %}
     </table>
 
 </div>

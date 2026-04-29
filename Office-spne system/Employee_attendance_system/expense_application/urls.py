@@ -15,10 +15,12 @@ urlpatterns = [
     # ADD VOUCHER (SEARCH + RESULT PAGE)
     path('add-voucher/', views.add_voucher, name='add_voucher'),
 
-    # ALL EXPENSE LIST
-    path('expense-list/', views.expense_list, name='expense_list'),
+    # # ALL EXPENSE LIST
+    # path('expense-list/', views.expense_list, name='expense_list'),
 
-    # SINGLE EXPENSE DETAIL
-    path('expense/<int:id>/', views.expense_detail, name='expense_detail'),
+    # # SINGLE EXPENSE DETAIL
+    # path('expense/<int:id>/', views.expense_detail, name='expense_detail'),
+
+    path('monthly/<int:year>/<int:month>/', views.monthly_detail, name='monthly_detail'),
 
 ]
